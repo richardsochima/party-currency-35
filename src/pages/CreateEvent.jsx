@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { Calendar } from "lucide-react";
+import { Calendar, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import DashboardSidebar from "@/components/DashboardSidebar";
 import { FormInput } from "@/components/forms/FormInput";
@@ -15,24 +14,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Form } from "@/components/ui/form";
+import { eventSchema } from "@/lib/validations/event";
 import { useAuthenticated } from "@/lib/hooks";
 import LoadingDisplay from "@/components/LoadingDisplay";
-
-// Form validation schema
-const eventSchema = z.object({
-  first_name: z.string().min(1, "First name is required"),
-  last_name: z.string().min(1, "Last name is required"),
-  email: z.string().email("Invalid email address"),
-  event_type: z.string().min(1, "Event type is required"),
-  start_date: z.string().min(1, "Start date is required"),
-  end_date: z.string().min(1, "End date is required"),
-  street_address: z.string().min(1, "Street address is required"),
-  post_code: z.string().min(1, "Post code is required"),
-  city: z.string().min(1, "City is required"),
-  country: z.string().min(1, "Country is required"),
-  lga: z.string().min(1, "LGA is required"),
-  reconciliation_service: z.boolean(),
-});
 
 const eventTypes = [
   "Birthday",
@@ -321,7 +305,7 @@ export default function CreateEvent() {
                 onClick={() => setShowSuccessModal(false)}
                 className="text-gray-500 hover:text-gray-700"
               >
-                ×
+                <X className="h-5 w-5" />
               </button>
             </div>
             <p className="text-gray-600 mb-4">
