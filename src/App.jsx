@@ -14,6 +14,7 @@ import ForgotPassword from "./pages/ForgotPassword";
 import { ContextWrapper } from "./context";
 import TermsOfService from "./pages/TermsOfService";
 import Dashboard from "./pages/Dashboard";
+import CreateEvent from "./pages/CreateEvent";
 import CustomCurrency from "./pages/CustomCurrency";
 import ReconciliationService from "./pages/ReconciliationService";
 import VendorKiosk from "./pages/VendorKiosk";
@@ -46,6 +47,7 @@ const App = () => {
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/terms" element={<TermsOfService />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/create-event" element={<CreateEvent />} />
           <Route path="/custom-currency" element={<CustomCurrency />} />
           <Route path="/reconciliation-service" element={<ReconciliationService />} />
           <Route path="/vendor-kiosk-system" element={<VendorKiosk />} />
