@@ -89,16 +89,16 @@ export default function CreateEvent() {
     return <LoadingDisplay />;
   }
 
-  return (
-    <div className="bg-white min-h-screen">
+  return authenticated ? (
+    <div className="bg-white min-h-screen flex">
       <DashboardSidebar />
-      <div className="pl-64">
-        <main className="p-6">
-          <h1 className="text-2xl font-semibold mb-6">Event Details</h1>
+      <div className="flex-1 pl-64 lg:pl-20 md:pl-0">
+        <main className="p-8 md:p-10 max-w-4xl mx-auto">
+          <h1 className="text-2xl font-semibold mb-8 text-left">Event Details</h1>
 
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <div className="grid grid-cols-2 gap-6">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <FormInput
                   control={form.control}
                   name="first_name"
@@ -113,14 +113,14 @@ export default function CreateEvent() {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <FormInput
                   control={form.control}
                   name="email"
                   label="Email Address"
                   placeholder="example@gmail.com"
                 />
-                <div className="space-y-2">
+                <div className="space-y-2 text-left">
                   <label className="text-sm font-medium">Event Type</label>
                   <Select
                     onValueChange={(value) =>
@@ -141,8 +141,8 @@ export default function CreateEvent() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-6">
-                <div className="space-y-2">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="space-y-2 text-left">
                   <label className="text-sm font-medium">Event Starting Date</label>
                   <div className="relative">
                     <FormInput
@@ -153,7 +153,7 @@ export default function CreateEvent() {
                     <Calendar className="absolute right-3 top-2.5 h-5 w-5 text-gray-400" />
                   </div>
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-2 text-left">
                   <label className="text-sm font-medium">Event Ending Date</label>
                   <div className="relative">
                     <FormInput
@@ -166,21 +166,23 @@ export default function CreateEvent() {
                 </div>
               </div>
 
-              <FormInput
-                control={form.control}
-                name="street_address"
-                label="Street Address"
-                placeholder="Enter street address"
-              />
+              <div className="space-y-2 text-left">
+                <FormInput
+                  control={form.control}
+                  name="street_address"
+                  label="Street Address"
+                  placeholder="Enter street address"
+                />
+              </div>
 
-              <div className="grid grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <FormInput
                   control={form.control}
                   name="post_code"
                   label="Post Code"
                   placeholder="Enter post code"
                 />
-                <div className="space-y-2">
+                <div className="space-y-2 text-left">
                   <label className="text-sm font-medium">City</label>
                   <Select
                     onValueChange={(value) =>
@@ -201,8 +203,8 @@ export default function CreateEvent() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-6">
-                <div className="space-y-2">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="space-y-2 text-left">
                   <label className="text-sm font-medium">Country</label>
                   <Select
                     onValueChange={(value) =>
@@ -221,7 +223,7 @@ export default function CreateEvent() {
                     </SelectContent>
                   </Select>
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-2 text-left">
                   <label className="text-sm font-medium">LGA</label>
                   <Select
                     onValueChange={(value) =>
@@ -242,11 +244,11 @@ export default function CreateEvent() {
                 </div>
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-2 text-left">
                 <label className="text-sm font-medium">
                   Reconciliation Service
                 </label>
-                <div className="flex gap-4">
+                <div className="flex gap-6">
                   <label className="flex items-center gap-2">
                     <input
                       type="radio"
@@ -284,7 +286,7 @@ export default function CreateEvent() {
 
               <Button
                 type="submit"
-                className="w-full bg-gold hover:bg-gold/90 text-white"
+                className="w-full md:w-auto px-8 bg-gold hover:bg-gold/90 text-white"
                 disabled={isSubmitting}
               >
                 {isSubmitting ? "Creating Event..." : "Create Event"}
@@ -294,8 +296,9 @@ export default function CreateEvent() {
         </main>
       </div>
 
+      {/* Success Modal */}
       {showSuccessModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
           <div className="bg-white p-6 rounded-lg max-w-md w-full">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-semibold">
@@ -324,5 +327,7 @@ export default function CreateEvent() {
         </div>
       )}
     </div>
+  ) : (
+    <LoadingDisplay />
   );
 }
