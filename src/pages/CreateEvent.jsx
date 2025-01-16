@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Calendar, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import DashboardSidebar from "@/components/DashboardSidebar";
+import DashboardHeader from "@/components/DashboardHeader";
 import { FormInput } from "@/components/forms/FormInput";
 import { Button } from "@/components/ui/button";
 import {
@@ -89,36 +90,40 @@ export default function CreateEvent() {
     return <LoadingDisplay />;
   }
 
-  return authenticated ? (
-    <div className="bg-white min-h-screen flex">
+  return (
+    <div className="min-h-screen bg-white">
       <DashboardSidebar />
-      <div className="flex-1 pl-64 lg:pl-20 md:pl-0">
-        <main className="p-8 md:p-10 max-w-4xl mx-auto">
+      <div className="md:pl-64 flex flex-col min-h-screen">
+        <DashboardHeader />
+        <main className="flex-1 p-4 md:p-8 max-w-4xl mx-auto w-full">
           <h1 className="text-2xl font-semibold mb-8 text-left">Event Details</h1>
 
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 md:space-y-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
                 <FormInput
                   control={form.control}
                   name="first_name"
                   label="First Name"
                   placeholder="Enter your first name"
+                  className="max-w-sm"
                 />
                 <FormInput
                   control={form.control}
                   name="last_name"
                   label="Last Name"
                   placeholder="Enter your last name"
+                  className="max-w-sm"
                 />
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
                 <FormInput
                   control={form.control}
                   name="email"
                   label="Email Address"
                   placeholder="example@gmail.com"
+                  className="max-w-sm"
                 />
                 <div className="space-y-2 text-left">
                   <label className="text-sm font-medium">Event Type</label>
@@ -127,7 +132,7 @@ export default function CreateEvent() {
                       form.setValue("event_type", value, { shouldValidate: true })
                     }
                   >
-                    <SelectTrigger>
+                    <SelectTrigger className="max-w-sm">
                       <SelectValue placeholder="Select event type" />
                     </SelectTrigger>
                     <SelectContent>
@@ -141,10 +146,10 @@ export default function CreateEvent() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
                 <div className="space-y-2 text-left">
                   <label className="text-sm font-medium">Event Starting Date</label>
-                  <div className="relative">
+                  <div className="relative max-w-sm">
                     <FormInput
                       control={form.control}
                       name="start_date"
@@ -155,7 +160,7 @@ export default function CreateEvent() {
                 </div>
                 <div className="space-y-2 text-left">
                   <label className="text-sm font-medium">Event Ending Date</label>
-                  <div className="relative">
+                  <div className="relative max-w-sm">
                     <FormInput
                       control={form.control}
                       name="end_date"
@@ -172,15 +177,17 @@ export default function CreateEvent() {
                   name="street_address"
                   label="Street Address"
                   placeholder="Enter street address"
+                  className="max-w-lg"
                 />
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
                 <FormInput
                   control={form.control}
                   name="post_code"
                   label="Post Code"
                   placeholder="Enter post code"
+                  className="max-w-sm"
                 />
                 <div className="space-y-2 text-left">
                   <label className="text-sm font-medium">City</label>
@@ -189,7 +196,7 @@ export default function CreateEvent() {
                       form.setValue("city", value, { shouldValidate: true })
                     }
                   >
-                    <SelectTrigger>
+                    <SelectTrigger className="max-w-sm">
                       <SelectValue placeholder="Select city" />
                     </SelectTrigger>
                     <SelectContent>
@@ -203,7 +210,7 @@ export default function CreateEvent() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
                 <div className="space-y-2 text-left">
                   <label className="text-sm font-medium">Country</label>
                   <Select
@@ -211,7 +218,7 @@ export default function CreateEvent() {
                       form.setValue("country", value, { shouldValidate: true })
                     }
                   >
-                    <SelectTrigger>
+                    <SelectTrigger className="max-w-sm">
                       <SelectValue placeholder="Select country" />
                     </SelectTrigger>
                     <SelectContent>
@@ -230,7 +237,7 @@ export default function CreateEvent() {
                       form.setValue("lga", value, { shouldValidate: true })
                     }
                   >
-                    <SelectTrigger>
+                    <SelectTrigger className="max-w-sm">
                       <SelectValue placeholder="Select LGA" />
                     </SelectTrigger>
                     <SelectContent>
@@ -298,7 +305,7 @@ export default function CreateEvent() {
 
       {/* Success Modal */}
       {showSuccessModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white p-6 rounded-lg max-w-md w-full">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-semibold">
@@ -327,7 +334,5 @@ export default function CreateEvent() {
         </div>
       )}
     </div>
-  ) : (
-    <LoadingDisplay />
   );
 }
