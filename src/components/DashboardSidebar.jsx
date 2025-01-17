@@ -9,6 +9,7 @@ import {
   LogOut,
   ChevronsLeft,
   ChevronsRight,
+  X,
 } from "lucide-react";
 import { USER_PROFILE_CONTEXT } from "@/context";
 import { deleteAuth } from "@/lib/util";
@@ -24,6 +25,7 @@ const navItems = [
 export default function Sidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { setUserProfile } = useContext(USER_PROFILE_CONTEXT);
   const navigate = useNavigate();
 
@@ -31,6 +33,10 @@ export default function Sidebar() {
     setUserProfile(null);
     deleteAuth();
     navigate("/login");
+  };
+
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
   return (
@@ -74,7 +80,7 @@ export default function Sidebar() {
               className="flex items-center gap-3 hover:bg-white/10 px-3 py-2 rounded-lg transition-colors"
             >
               <item.icon className="w-5 h-5 min-w-[20px]" />
-              {!isCollapsed && <span className="whitespace-nowrap">{item.label}</span>}
+              {!isCollapsed && <span>{item.label}</span>}
             </Link>
           ))}
         </nav>
@@ -91,19 +97,62 @@ export default function Sidebar() {
         </div>
       </div>
 
-      {/* Mobile Bottom Navigation */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-bluePrimary text-white z-50">
-        <nav className="flex justify-around items-center h-16">
-          {navItems.map((item) => (
-            <Link
-              key={item.href}
-              to={item.href}
-              className="p-2"
-            >
-              <item.icon className="w-6 h-6" />
+      {/* Mobile Menu */}
+      <div
+        className={`fixed inset-0 bg-black/50 z-50 transition-opacity duration-300 md:hidden ${
+          isMobileMenuOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+        }`}
+        onClick={() => setIsMobileMenuOpen(false)}
+      >
+        <div
+          className={`fixed top-0 left-0 h-screen w-64 bg-bluePrimary text-white transform transition-transform duration-300 ${
+            isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {/* Mobile Menu Header */}
+          <div className="flex justify-between items-center px-4 py-6 border-b border-white/10">
+            <Link to="/">
+              <img
+                src="/main_logo.svg"
+                alt="Party Currency"
+                width={120}
+                height={40}
+              />
             </Link>
-          ))}
-        </nav>
+            <button
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="text-white"
+            >
+              <X className="w-6 h-6" />
+            </button>
+          </div>
+
+          {/* Mobile Navigation */}
+          <nav className="mt-6 px-4">
+            {navItems.map((item) => (
+              <Link
+                key={item.href}
+                to={item.href}
+                className="flex items-center gap-3 py-3 hover:bg-white/10 px-3 rounded-lg"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <item.icon className="w-5 h-5" />
+                <span>{item.label}</span>
+              </Link>
+            ))}
+            <button
+              onClick={() => {
+                setIsMobileMenuOpen(false);
+                setIsPopupOpen(true);
+              }}
+              className="flex items-center gap-3 py-3 hover:bg-white/10 px-3 rounded-lg w-full text-left mt-4"
+            >
+              <LogOut className="w-5 h-5" />
+              <span>Log out</span>
+            </button>
+          </nav>
+        </div>
       </div>
 
       {/* Logout Confirmation Modal */}
