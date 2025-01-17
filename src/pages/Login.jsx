@@ -94,7 +94,7 @@ export default function LoginPage() {
         </div>
 
         <form className="space-y-6" onSubmit={handleLogin}>
-          <div className="space-y-2">
+          <div className="space-y-2 text-left">
             <Label htmlFor="email">Email</Label>
             <Input
               id="email"
@@ -106,7 +106,7 @@ export default function LoginPage() {
             />
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-2 text-left">
             <Label htmlFor="password">Password</Label>
             <div className="relative">
               <Input
