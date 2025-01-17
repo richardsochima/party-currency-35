@@ -40,7 +40,7 @@ export default function LoginPage() {
           const userProfileData = await userProfileResponse.json();
           setUserProfile(userProfileData); // Update user profile context
           console.log("User profile fetched:", userProfileData);
-          navigate("/dashboard"); // Redirect to dashboard
+          navigate("/dashboard", { replace: true }); // Ensure redirect to dashboard
         } else {
           throw new Error("Failed to fetch user profile.");
         }
