@@ -16,6 +16,10 @@ const WithoutFooter = [
   "/forgot-password",
   "/terms",
   "/dashboard",
+  "/create-event",
+  "/manage-event",
+  "/templates",
+  "/settings",
 ];
 
 const Footer = () => {
