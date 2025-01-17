@@ -30,28 +30,28 @@ const Footer = () => {
 
   return (
     <footer className="bg-footer text-white py-10 px-6 md:px-20 ">
-      <div className="container mx-auto flex flex-col md:flex-row justify-between gap-10">
+      <div className="container mx-auto flex flex-col md:flex-row justify-left gap-10">
         {/* Company Section */}
         <div>
           <h3 className="font-playfair font-semibold text-2xl mb-4">Company</h3>
           <ul className="space-y-2">
             <li>
-              <a href="#" className="text-left hover:text-gold">
+              <a href="#" className=" hover:text-gold">
                 Why Choose Party Currency?
               </a>
             </li>
             <li>
-              <a href="/terms" className="text-left hover:text-gold">
+              <a href="/terms" className=" hover:text-gold">
                 Terms
               </a>
             </li>
             <li>
-              <a href="#" className="text-left hover:text-gold">
+              <a href="#" className=" hover:text-gold">
                 Privacy
               </a>
             </li>
             <li>
-              <a href="#" className="text-left hover:text-gold">
+              <a href="#" className=" hover:text-gold">
                 FAQs
               </a>
             </li>
@@ -63,22 +63,22 @@ const Footer = () => {
           <h3 className="font-playfair font-semibold text-2xl mb-4">Features</h3>
           <ul className="space-y-2">
             <li>
-              <a href="#" className="text-left hover:text-gold">
+              <a href="#" className="hover:text-gold">
                 Custom Currency
               </a>
             </li>
             <li>
-              <a href="#" className="text-left hover:text-gold">
+              <a href="#" className="hover:text-gold">
                 Vendor Kiosk System
               </a>
             </li>
             <li>
-              <a href="#" className="text-left hover:text-gold">
+              <a href="#" className="hover:text-gold">
                 Reconciliation Service
               </a>
             </li>
             <li>
-              <a href="#" className="text-left hover:text-gold">
+              <a href="#" className="hover:text-gold">
                 Foot Soldiers
               </a>
             </li>
@@ -88,10 +88,10 @@ const Footer = () => {
         {/* Contact Section */}
         <div>
           <h3 className="font-playfair font-semibold text-2xl mb-4">Contact</h3>
-          <ul className="text-left space-y-2">
+          <ul className="space-y-2">
             <li>partycurrency@gmail.com</li>
             <li>
-              <a href="https://wa.me/12404815186" className="text-left hover:text-gold">
+              <a href="https://wa.me/12404815186" className="hover:text-gold">
                 Whatsapp: +1 (240) 481-5186
               </a>
             </li>
