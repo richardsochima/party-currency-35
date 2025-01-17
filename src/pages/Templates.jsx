@@ -2,7 +2,7 @@ import React from "react";
 import DashboardSidebar from "../components/DashboardSidebar";
 import DashboardHeader from "../components/DashboardHeader";
 import { useAuthenticated } from "../lib/hooks";
-import LoadingDisplay from "@/components/LoadingDisplay";
+import { LoadingDisplay } from "@/components/LoadingDisplay";
 
 export default function Templates() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
