@@ -1,7 +1,7 @@
 import React from "react";
 import { Loader } from "lucide-react";
 
-export default function LoadingDisplay({ message = "Loading, please wait..." }) {
+export function LoadingDisplay({ message = "Loading, please wait..." }) {
   return (
     <div className="flex flex-col justify-center items-center gap-5 min-h-[50vh] w-full p-4">
       <div className="relative">
