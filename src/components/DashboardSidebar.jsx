@@ -1,31 +1,15 @@
 import React, { useState, useContext } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import {
-  LayoutDashboard,
-  PenSquare,
-  ClipboardList,
-  Coins,
-  Settings,
-  LogOut,
-  ChevronsLeft,
-  ChevronsRight,
-  X,
-} from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { LogOut, ChevronsLeft, ChevronsRight, X } from "lucide-react";
 import { USER_PROFILE_CONTEXT } from "@/context";
 import { deleteAuth } from "@/lib/util";
+import SidebarLogo from "./sidebar/SidebarLogo";
+import SidebarNavLinks from "./sidebar/SidebarNavLinks";
+import LogoutConfirmation from "./sidebar/LogoutConfirmation";
 
-const navItems = [
-  { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard" },
-  { icon: PenSquare, label: "Create Event", href: "/create-event" },
-  { icon: ClipboardList, label: "Manage Event", href: "/manage-event" },
-  { icon: Coins, label: "Currency Templates", href: "/templates" },
-  { icon: Settings, label: "Settings", href: "/settings" },
-];
-
-export default function Sidebar() {
+export default function Sidebar({ isOpen, onClose }) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { setUserProfile } = useContext(USER_PROFILE_CONTEXT);
   const navigate = useNavigate();
 
@@ -33,10 +17,6 @@ export default function Sidebar() {
     setUserProfile(null);
     deleteAuth();
     navigate("/login");
-  };
-
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
   return (
@@ -47,18 +27,8 @@ export default function Sidebar() {
           isCollapsed ? "w-20" : "w-64"
         }`}
       >
-        {/* Logo Section */}
         <div className="flex justify-between items-center border-b border-white/10 px-3 py-2 h-20">
-          {!isCollapsed && (
-            <Link to="/">
-              <img
-                src="/main_logo.svg"
-                alt="Party Currency"
-                width={120}
-                height={40}
-              />
-            </Link>
-          )}
+          <SidebarLogo isCollapsed={isCollapsed} />
           <button
             onClick={() => setIsCollapsed(!isCollapsed)}
             className="text-white hover:text-gray-300"
@@ -71,21 +41,8 @@ export default function Sidebar() {
           </button>
         </div>
 
-        {/* Navigation Links */}
-        <nav className="flex-1 space-y-2 mt-8 px-3">
-          {navItems.map((item) => (
-            <Link
-              key={item.href}
-              to={item.href}
-              className="flex items-center gap-3 hover:bg-white/10 px-3 py-2 rounded-lg transition-colors"
-            >
-              <item.icon className="w-5 h-5 min-w-[20px]" />
-              {!isCollapsed && <span>{item.label}</span>}
-            </Link>
-          ))}
-        </nav>
+        <SidebarNavLinks isCollapsed={isCollapsed} />
 
-        {/* Logout Button */}
         <div className="px-3 mb-6">
           <button
             onClick={() => setIsPopupOpen(true)}
@@ -100,84 +57,45 @@ export default function Sidebar() {
       {/* Mobile Menu */}
       <div
         className={`fixed inset-0 bg-black/50 z-50 transition-opacity duration-300 md:hidden ${
-          isMobileMenuOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+          isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
         }`}
-        onClick={() => setIsMobileMenuOpen(false)}
+        onClick={onClose}
       >
         <div
           className={`fixed top-0 left-0 h-screen w-64 bg-bluePrimary text-white transform transition-transform duration-300 ${
-            isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
+            isOpen ? "translate-x-0" : "-translate-x-full"
           }`}
           onClick={(e) => e.stopPropagation()}
         >
-          {/* Mobile Menu Header */}
           <div className="flex justify-between items-center px-4 py-6 border-b border-white/10">
-            <Link to="/">
-              <img
-                src="/main_logo.svg"
-                alt="Party Currency"
-                width={120}
-                height={40}
-              />
-            </Link>
-            <button
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="text-white"
-            >
+            <SidebarLogo isCollapsed={false} />
+            <button onClick={onClose} className="text-white">
               <X className="w-6 h-6" />
             </button>
           </div>
 
-          {/* Mobile Navigation */}
-          <nav className="mt-6 px-4">
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                to={item.href}
-                className="flex items-center gap-3 py-3 hover:bg-white/10 px-3 rounded-lg"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                <item.icon className="w-5 h-5" />
-                <span>{item.label}</span>
-              </Link>
-            ))}
+          <SidebarNavLinks isCollapsed={false} onLinkClick={onClose} />
+
+          <div className="px-4">
             <button
               onClick={() => {
-                setIsMobileMenuOpen(false);
+                onClose();
                 setIsPopupOpen(true);
               }}
-              className="flex items-center gap-3 py-3 hover:bg-white/10 px-3 rounded-lg w-full text-left mt-4"
+              className="flex items-center gap-3 py-3 hover:bg-white/10 px-3 rounded-lg w-full text-left"
             >
               <LogOut className="w-5 h-5" />
               <span>Log out</span>
             </button>
-          </nav>
+          </div>
         </div>
       </div>
 
-      {/* Logout Confirmation Modal */}
-      {isPopupOpen && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg p-6 max-w-sm w-full">
-            <h3 className="text-lg font-semibold mb-4">Confirm Logout</h3>
-            <p className="text-gray-600 mb-6">Are you sure you want to log out?</p>
-            <div className="flex justify-end gap-4">
-              <button
-                onClick={() => setIsPopupOpen(false)}
-                className="px-4 py-2 text-gray-600 hover:text-gray-800"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleLogout}
-                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-              >
-                Logout
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <LogoutConfirmation
+        isOpen={isPopupOpen}
+        onClose={() => setIsPopupOpen(false)}
+        onConfirm={handleLogout}
+      />
     </>
   );
 }
