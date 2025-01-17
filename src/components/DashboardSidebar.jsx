@@ -42,7 +42,7 @@ export default function Sidebar() {
         }`}
       >
         {/* Logo Section */}
-        <div className="flex justify-between items-center border-b border-white/10 px-3 py-2 h-16">
+        <div className="flex justify-between items-center border-b border-white/10 px-3 py-2 h-20">
           {!isCollapsed && (
             <Link to="/">
               <img
