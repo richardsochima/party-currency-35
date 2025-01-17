@@ -28,7 +28,7 @@ const eventTypes = [
 ];
 
 const cities = ["Lagos", "Ibadan", "Abuja", "Port Harcourt", "Kano"];
-const countries = ["Nigeria", "Ghana", "Kenya", "South Africa"];
+const countries = ["Nigeria"];
 const lgas = ["Ibadan North", "Ibadan South", "Akinyele", "Egbeda"];
 
 export default function CreateEvent() {
