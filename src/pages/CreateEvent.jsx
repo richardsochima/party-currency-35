@@ -46,24 +46,23 @@ export default function CreateEvent() {
   }
 
   return (
-    <div className="bg-gradientWhite1 min-h-screen">
+    <div className="min-h-screen bg-gradientWhite1">
       <DashboardSidebar
         isOpen={isMobileMenuOpen}
         onClose={() => setIsMobileMenuOpen(false)}
       />
 
       <div className="md:pl-64">
-        <div className="fixed top-0 right-0 left-0 md:left-64 z-10 bg-white shadow-sm">
-          <DashboardHeader toggleMobileMenu={() => setIsMobileMenuOpen(!isMobileMenuOpen)} />
-        </div>
+        <DashboardHeader toggleMobileMenu={() => setIsMobileMenuOpen(!isMobileMenuOpen)} />
 
-        <main className="pt-24 px-4 md:px-8 max-w-4xl mx-auto pb-12">
-          <div className="bg-white rounded-lg shadow-md p-6 md:p-8">
-            <h1 className="text-2xl font-playfair font-semibold text-bluePrimary mb-8 text-left">
-              Event Details
-            </h1>
+        <main className="p-6 md:p-8">
+          <div className="max-w-4xl mx-auto">
+            <div className="bg-white rounded-lg shadow-sm p-6 md:p-8">
+              <h1 className="text-2xl font-playfair font-semibold text-bluePrimary mb-8 text-left">
+                Event Details
+              </h1>
 
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <label className="block text-sm font-medium text-bluePrimary text-left">
@@ -252,16 +251,17 @@ export default function CreateEvent() {
                 )}
               </div>
 
-              <div className="flex justify-end pt-6">
-                <Button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="bg-gold hover:bg-gold/90 text-white font-medium py-2 px-6 rounded-lg transition-colors disabled:opacity-50"
-                >
-                  {isSubmitting ? "Creating Event..." : "Create Event"}
-                </Button>
-              </div>
-            </form>
+                <div className="flex justify-end pt-6">
+                  <Button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="bg-gold hover:bg-gold/90 text-white font-medium py-2 px-6 rounded-lg transition-colors disabled:opacity-50"
+                  >
+                    {isSubmitting ? "Creating Event..." : "Create Event"}
+                  </Button>
+                </div>
+              </form>
+            </div>
           </div>
         </main>
       </div>
