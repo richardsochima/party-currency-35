@@ -7,16 +7,7 @@ import SidebarLogo from "./sidebar/SidebarLogo";
 import SidebarNavLinks from "./sidebar/SidebarNavLinks";
 import LogoutConfirmation from "./sidebar/LogoutConfirmation";
 
-
-const navItems = [
-  { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard" },
-  { icon: PenSquare, label: "Create Event", href: "/create-event" },
-  { icon: ClipboardList, label: "Manage Event", href: "/manage-event" },
-  { icon: Coins, label: "Currency Templates", href: "/templates" },
-  { icon: Settings, label: "Settings", href: "/settings" },
-];
-
-export default function Sidebar() {
+export default function Sidebar({ isOpen, onClose }) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const { setUserProfile } = useContext(USER_PROFILE_CONTEXT);
