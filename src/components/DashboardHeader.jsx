@@ -8,6 +8,7 @@ export default function DashboardHeader({ toggleMobileMenu }) {
   const handleMenuClick = (e) => {
     e.preventDefault();
     e.stopPropagation();
+    console.log("Menu clicked"); // Debug log
     toggleMobileMenu();
   };
 

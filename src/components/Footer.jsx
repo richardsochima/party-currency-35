@@ -24,6 +24,7 @@ const WithoutFooter = [
 const Footer = () => {
   const { pathname } = useLocation();
 
+  // Remove feature pages from WithoutFooter check
   if (WithoutFooter.includes(pathname)) return null;
 
   return (

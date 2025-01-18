@@ -9,17 +9,36 @@ import CreateEvent from "./pages/CreateEvent";
 import ManageEvent from "./pages/ManageEvent";
 import Templates from "./pages/Templates";
 import Settings from "./pages/Settings";
+import CelebrantSignup from "./pages/CelebrantSignup";
+import MerchantSignup from "./pages/MerchantSignup";
+import CustomCurrency from "./pages/CustomCurrency";
+import ReconciliationService from "./pages/ReconciliationService";
+import VendorKiosk from "./pages/VendorKiosk";
+import FootSoldiers from "./pages/FootSoldiers";
 import PrivateRoute from "./components/PrivateRoute";
 
 function App() {
+  console.log("App component rendering"); // Debug log
+
   return (
     <Router>
       <ContextWrapper>
         <Toaster position="top-right" />
         <Routes>
-          <Route path="/" element={<Home />} />
+          {/* Public Routes */}
+          <Route exact path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/celebrant-signup" element={<CelebrantSignup />} />
+          <Route path="/merchant-signup" element={<MerchantSignup />} />
+          
+          {/* Feature Pages */}
+          <Route path="/custom-currency" element={<CustomCurrency />} />
+          <Route path="/reconciliation-service" element={<ReconciliationService />} />
+          <Route path="/vendor-kiosk-system" element={<VendorKiosk />} />
+          <Route path="/foot-soldiers" element={<FootSoldiers />} />
+
+          {/* Protected Routes */}
           <Route
             path="/dashboard"
             element={
@@ -60,6 +79,9 @@ function App() {
               </PrivateRoute>
             }
           />
+
+          {/* Fallback Route */}
+          <Route path="*" element={<Home />} />
         </Routes>
       </ContextWrapper>
     </Router>
