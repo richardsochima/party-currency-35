@@ -51,86 +51,88 @@ export default function CreateEvent() {
       />
 
       <div className="md:pl-64">
-        <div className="fixed top-0 right-0 left-0 md:left-64 z-10 bg-white">
+        <div className="fixed top-0 right-0 left-0 md:left-64 z-10 bg-white shadow-sm">
           <DashboardHeader toggleMobileMenu={() => setIsMobileMenuOpen(!isMobileMenuOpen)} />
         </div>
 
-        <main className="pt-24 p-4 md:p-8 max-w-4xl mx-auto">
-          <h1 className="text-2xl md:text-3xl font-playfair font-semibold text-bluePrimary mb-8">
+        <main className="pt-24 px-4 md:px-8 max-w-4xl mx-auto">
+          <h1 className="text-2xl md:text-3xl font-playfair font-semibold text-bluePrimary mb-8 text-left">
             Create New Event
           </h1>
 
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 bg-white rounded-lg shadow-md p-6 md:p-8">
             <div className="space-y-2">
-              <label className="auth-input-label text-bluePrimary">Event Name</label>
+              <label className="block text-sm font-medium text-bluePrimary text-left">Event Name</label>
               <input
                 {...register("event_name", { required: "Event name is required" })}
-                className="auth-input px-4 py-2 border border-lightgray rounded-lg focus:outline-none focus:ring-2 focus:ring-bluePrimary"
+                className="w-full px-4 py-2 border border-lightgray rounded-lg focus:outline-none focus:ring-2 focus:ring-bluePrimary/20 focus:border-bluePrimary transition-colors"
                 placeholder="Enter event name"
               />
               {errors.event_name && (
-                <p className="text-red-500 text-sm">{errors.event_name.message}</p>
+                <p className="text-red-500 text-sm text-left">{errors.event_name.message}</p>
               )}
             </div>
 
             <div className="space-y-2">
-              <label className="auth-input-label text-bluePrimary">Event Description</label>
+              <label className="block text-sm font-medium text-bluePrimary text-left">Event Description</label>
               <textarea
                 {...register("event_description", { required: "Description is required" })}
-                className="auth-input px-4 py-2 border border-lightgray rounded-lg focus:outline-none focus:ring-2 focus:ring-bluePrimary min-h-[100px]"
+                className="w-full px-4 py-2 border border-lightgray rounded-lg focus:outline-none focus:ring-2 focus:ring-bluePrimary/20 focus:border-bluePrimary transition-colors min-h-[120px] resize-y"
                 placeholder="Describe your event"
               />
               {errors.event_description && (
-                <p className="text-red-500 text-sm">{errors.event_description.message}</p>
+                <p className="text-red-500 text-sm text-left">{errors.event_description.message}</p>
               )}
             </div>
 
             <div className="space-y-2">
-              <label className="auth-input-label text-bluePrimary">Event Date</label>
+              <label className="block text-sm font-medium text-bluePrimary text-left">Event Date</label>
               <div className="relative">
                 <input
                   type="date"
                   {...register("event_date", { required: "Event date is required" })}
-                  className="auth-input px-4 py-2 border border-lightgray rounded-lg focus:outline-none focus:ring-2 focus:ring-bluePrimary"
+                  className="w-full px-4 py-2 border border-lightgray rounded-lg focus:outline-none focus:ring-2 focus:ring-bluePrimary/20 focus:border-bluePrimary transition-colors pr-10"
                 />
-                <Calendar className="absolute right-3 top-2.5 h-5 w-5 text-gray-400" />
+                <Calendar className="absolute right-3 top-2.5 h-5 w-5 text-blueSecondary pointer-events-none" />
               </div>
               {errors.event_date && (
-                <p className="text-red-500 text-sm">{errors.event_date.message}</p>
+                <p className="text-red-500 text-sm text-left">{errors.event_date.message}</p>
               )}
             </div>
 
             <div className="space-y-2">
-              <label className="auth-input-label text-bluePrimary">Event Address</label>
+              <label className="block text-sm font-medium text-bluePrimary text-left">Event Address</label>
               <input
                 {...register("address", { required: "Event address is required" })}
-                className="auth-input px-4 py-2 border border-lightgray rounded-lg focus:outline-none focus:ring-2 focus:ring-bluePrimary"
+                className="w-full px-4 py-2 border border-lightgray rounded-lg focus:outline-none focus:ring-2 focus:ring-bluePrimary/20 focus:border-bluePrimary transition-colors"
                 placeholder="Enter event venue address"
               />
               {errors.address && (
-                <p className="text-red-500 text-sm">{errors.address.message}</p>
+                <p className="text-red-500 text-sm text-left">{errors.address.message}</p>
               )}
             </div>
 
             <div className="space-y-2">
-              <label className="auth-input-label text-bluePrimary">Delivery Address</label>
+              <label className="block text-sm font-medium text-bluePrimary text-left">Delivery Address</label>
               <input
                 {...register("delivery_address", { required: "Delivery address is required" })}
-                className="auth-input px-4 py-2 border border-lightgray rounded-lg focus:outline-none focus:ring-2 focus:ring-bluePrimary"
+                className="w-full px-4 py-2 border border-lightgray rounded-lg focus:outline-none focus:ring-2 focus:ring-bluePrimary/20 focus:border-bluePrimary transition-colors"
                 placeholder="Enter delivery address"
               />
               {errors.delivery_address && (
-                <p className="text-red-500 text-sm">{errors.delivery_address.message}</p>
+                <p className="text-red-500 text-sm text-left">{errors.delivery_address.message}</p>
               )}
             </div>
 
-            <Button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full md:w-auto bg-gold hover:bg-gold/90 text-white font-medium py-2 px-8 rounded-lg transition-colors"
-            >
-              {isSubmitting ? "Creating Event..." : "Create Event"}
-            </Button>
+            <div className="pt-4">
+              <Button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full md:w-auto bg-gold hover:bg-gold/90 text-white font-medium py-2.5 px-8 rounded-lg transition-colors disabled:opacity-50"
+              >
+                {isSubmitting ? "Creating Event..." : "Create Event"}
+              </Button>
+            </div>
           </form>
         </main>
       </div>
