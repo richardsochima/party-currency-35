@@ -13,7 +13,7 @@ export default function DashboardHeader({ toggleMobileMenu }) {
   };
 
   return (
-    <header className="h-20 border-b flex items-center justify-between px-4 md:px-6 bg-white">
+    <header className="h-20 border-b flex items-center justify-between px-4 md:px-6 bg-white fixed top-0 right-0 left-0 md:left-64 z-50">
       <div className="flex items-center gap-4">
         <button
           onClick={handleMenuClick}
