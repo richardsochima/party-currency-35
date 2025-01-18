@@ -7,7 +7,16 @@ import SidebarLogo from "./sidebar/SidebarLogo";
 import SidebarNavLinks from "./sidebar/SidebarNavLinks";
 import LogoutConfirmation from "./sidebar/LogoutConfirmation";
 
-export default function Sidebar({ isOpen, onClose }) {
+
+const navItems = [
+  { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard" },
+  { icon: PenSquare, label: "Create Event", href: "/create-event" },
+  { icon: ClipboardList, label: "Manage Event", href: "/manage-event" },
+  { icon: Coins, label: "Currency Templates", href: "/templates" },
+  { icon: Settings, label: "Settings", href: "/settings" },
+];
+
+export default function Sidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const { setUserProfile } = useContext(USER_PROFILE_CONTEXT);
@@ -46,7 +55,7 @@ export default function Sidebar({ isOpen, onClose }) {
         <div className="mt-auto px-3 mb-6">
           <button
             onClick={() => setIsPopupOpen(true)}
-            className="flex items-center gap-3 hover:bg-white/10 px-3 py-2 rounded-lg w-full text-left transition-colors"
+            className="flex items-center gap-3 hover:bg-white/10 px-3 py-4 rounded-lg w-full text-left transition-colors"
           >
             <LogOut className="w-5 h-5 min-w-[20px]" />
             {!isCollapsed && <span>Log out</span>}
