@@ -55,7 +55,7 @@ export default function Sidebar() {
         <div className="mt-auto px-3 mb-6">
           <button
             onClick={() => setIsPopupOpen(true)}
-            className="flex items-center gap-3 hover:bg-white/10 px-3 py-4 rounded-lg w-full text-left transition-colors"
+            className="flex items-center gap-3 hover:bg-white/10 px-3 py-2 rounded-lg w-full text-left transition-colors"
           >
             <LogOut className="w-5 h-5 min-w-[20px]" />
             {!isCollapsed && <span>Log out</span>}
