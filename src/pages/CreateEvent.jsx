@@ -17,7 +17,7 @@ import {
 import { Form } from "@/components/ui/form";
 import { eventSchema } from "@/lib/validations/event";
 import { useAuthenticated } from "@/lib/hooks";
-import LoadingDisplay from "@/components/LoadingDisplay";
+import { LoadingDisplay } from "@/components/LoadingDisplay";
 
 const eventTypes = [
   "Birthday",

@@ -5,7 +5,7 @@ import DashboardSidebar from "../components/DashboardSidebar";
 import DashboardHeader from "../components/DashboardHeader";
 import StatsCard from "../components/StatsCard";
 import { useAuthenticated } from "../lib/hooks";
-import LoadingDisplay from "@/components/LoadingDisplay";
+import { LoadingDisplay } from "@/components/LoadingDisplay";
 
 export default function Dashboard() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
