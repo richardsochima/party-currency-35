@@ -41,7 +41,7 @@ const EventCard = ({ event }) => (
       </div>
       <Button
         variant="outline"
-        className="text-gold hover:text-gold hover:bg-gold/10 border-gold"
+        className="text-white bg-gold hover:bg-gold/10"
       >
         <Eye className="mr-2 h-4 w-4" />
         View
