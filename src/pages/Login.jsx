@@ -4,22 +4,24 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
-import { getProfileApi, loginCustomerApi } from "@/api/authApi";
+import { loginCustomerApi } from "@/api/authApi";
 import { storeAuth } from "@/lib/util";
 import { USER_PROFILE_CONTEXT, SIGNUP_CONTEXT } from "@/context";
+import { GoogleAuthButton } from "@/components/GoogleAuthButton";
+import toast from "react-hot-toast";
 
 export default function LoginPage() {
-  const { setSignupOpen } = useContext(SIGNUP_CONTEXT); // Handles opening the signup modal
-  const { setUserProfile } = useContext(USER_PROFILE_CONTEXT); // Updates user profile context
-  const [email, setEmail] = useState(""); // State for email input
-  const [password, setPassword] = useState(""); // State for password input
-  const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
-  const [errorMessage, setErrorMessage] = useState(""); // State for error messages
-  const [loading, setLoading] = useState(false); // State for loading indicator
-  const navigate = useNavigate(); // React Router navigation hook
+  const { setSignupOpen } = useContext(SIGNUP_CONTEXT);
+  const { setUserProfile } = useContext(USER_PROFILE_CONTEXT);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
-    e.preventDefault(); // Prevent page reload
+    e.preventDefault();
     setLoading(true);
     setErrorMessage("");
 
@@ -29,35 +31,26 @@ export default function LoginPage() {
 
       if (response.ok) {
         console.log("Login successful:", data);
-        const accessToken = data.token; // Get the token from API response
-        // Store token in cookies and user type in local storage
-        storeAuth(accessToken, "customer", true);
-
-        // Fetch user profile using the access token
-        const userProfileResponse = await getProfileApi();
-        if (userProfileResponse.ok) {
-          const userProfileData = await userProfileResponse.json();
-          setUserProfile(userProfileData); // Update user profile context
-          console.log("User profile fetched:", userProfileData);
-          navigate("/dashboard"); // Changed from { replace: true } to ensure proper navigation
-        } else {
-          throw new Error("Failed to fetch user profile.");
-        }
+        storeAuth(data.token, "customer", true);
+        setUserProfile(data.user);
+        navigate("/dashboard");
+        toast.success("Successfully logged in!");
       } else {
         setErrorMessage(data.message || "Invalid email or password.");
+        toast.error(data.message || "Invalid email or password.");
       }
     } catch (error) {
       console.error("Login error:", error);
       setErrorMessage("An error occurred. Please try again later.");
+      toast.error("An error occurred. Please try again later.");
     } finally {
-      setLoading(false); // Reset loading state
+      setLoading(false);
     }
   };
 
   return (
     <div className="flex flex-col justify-center items-center p-4 min-h-screen">
-      {/* Back Button */}
-      <div className="top-4 left-4 md:left-8 absolute">
+      <div className="absolute top-4 left-4 md:left-8">
         <button
           onClick={() => navigate("/")}
           className="flex items-center text-gray-600 hover:text-black transition"
@@ -118,12 +111,12 @@ export default function LoginPage() {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="top-1/2 right-3 absolute text-gray-400 -translate-y-1/2"
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
               >
                 {showPassword ? (
-                  <EyeOff className="w-5 h-5" />
+                  <EyeOff className="w-5 h-5 text-gray-500" />
                 ) : (
-                  <Eye className="w-5 h-5" />
+                  <Eye className="w-5 h-5 text-gray-500" />
                 )}
               </button>
             </div>
@@ -142,32 +135,17 @@ export default function LoginPage() {
           </Button>
         </form>
 
-        {/* Alternative Login Options */}
-        <div className="space-y-4">
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <div className="border-t border-lightgray w-full"></div>
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="bg-white px-2 text-muted-foreground">
-                Or continue with
-              </span>
-            </div>
+        <div className="relative">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-gray-300"></div>
           </div>
-
-          <div className="gap-4 grid grid-cols-2">
-            <Button variant="outline" className="border-lightgray">
-              <img src="/google.svg" alt="Google" className="mr-2 w-5 h-5" />
-              Google
-            </Button>
-            <Button variant="outline" className="border-lightgray">
-              <img src="/apple.svg" alt="Apple" className="mr-2 w-5 h-5" />
-              Apple
-            </Button>
+          <div className="relative flex justify-center text-sm">
+            <span className="bg-white px-2 text-gray-500">Or</span>
           </div>
         </div>
 
-        {/* Sign-up and Forgot Password Links */}
+        <GoogleAuthButton />
+
         <div className="space-y-2 text-center">
           <Link
             to="/forgot-password"
@@ -177,12 +155,12 @@ export default function LoginPage() {
           </Link>
           <div className="text-sm">
             New to Party Currency?{" "}
-            <p
-              onClick={() => setSignupOpen(true)} // Open signup modal
+            <button
+              onClick={() => setSignupOpen(true)}
               className="text-gold hover:underline cursor-pointer"
             >
               Sign up
-            </p>
+            </button>
           </div>
         </div>
       </div>
