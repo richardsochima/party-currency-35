@@ -1,12 +1,19 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Calendar, X } from "lucide-react";
+import { Calendar } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 import DashboardSidebar from "@/components/DashboardSidebar";
 import DashboardHeader from "@/components/DashboardHeader";
 import { FormInput } from "@/components/forms/FormInput";
 import { Button } from "@/components/ui/button";
+import { Form } from "@/components/ui/form";
+import { eventSchema } from "@/lib/validations/event";
+import { useAuthenticated } from "@/lib/hooks";
+import { LoadingDisplay } from "@/components/LoadingDisplay";
+import { EventSuccessModal } from "@/components/events/EventSuccessModal";
+import { createEvent } from "@/services/eventService";
 import {
   Select,
   SelectContent,
@@ -14,10 +21,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Form } from "@/components/ui/form";
-import { eventSchema } from "@/lib/validations/event";
-import { useAuthenticated } from "@/lib/hooks";
-import { LoadingDisplay } from "@/components/LoadingDisplay";
 
 const eventTypes = [
   "Birthday",
@@ -34,7 +37,6 @@ const lgas = ["Ibadan North", "Ibadan South", "Akinyele", "Egbeda"];
 
 export default function CreateEvent() {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState("");
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [eventId, setEventId] = useState("");
   const navigate = useNavigate();
@@ -44,42 +46,30 @@ export default function CreateEvent() {
     resolver: zodResolver(eventSchema),
     defaultValues: {
       event_name: "",
-      event_type: "",
-      start_date: "",
-      end_date: "",
-      street_address: "",
-      post_code: "",
-      city: "",
-      country: "",
-      lga: "",
-      reconciliation_service: false,
+      event_description: "",
+      event_date: "",
+      address: "",
+      delivery_address: "",
     },
   });
 
   const onSubmit = async (data) => {
     setIsSubmitting(true);
-    setError("");
-
     try {
-      const token = localStorage.getItem("token");
-      const response = await fetch("/api/events/create", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Token ${token}`,
-        },
-        body: JSON.stringify(data),
+      const result = await createEvent({
+        event_name: data.event_name,
+        event_description: data.event_description || "",
+        event_date: data.event_date,
+        address: data.address,
+        delivery_address: data.delivery_address || data.address,
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to create event");
-      }
-
-      const result = await response.json();
       setEventId(result.event_id);
       setShowSuccessModal(true);
-    } catch (err) {
-      setError(err.message);
+      toast.success("Event created successfully!");
+    } catch (error) {
+      console.error("Error creating event:", error);
+      toast.error(error.message || "Failed to create event. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -105,7 +95,6 @@ export default function CreateEvent() {
                   name="event_name"
                   label="Event Name"
                   placeholder="Enter the event name"
-                  className="max-w-sm"
                 />
                 <div className="space-y-2 text-left">
                   <label className="text-sm font-medium">Event Type</label>
@@ -114,7 +103,7 @@ export default function CreateEvent() {
                       form.setValue("event_type", value, { shouldValidate: true })
                     }
                   >
-                    <SelectTrigger className="max-w-sm">
+                    <SelectTrigger>
                       <SelectValue placeholder="Select event type" />
                     </SelectTrigger>
                     <SelectContent>
@@ -128,24 +117,22 @@ export default function CreateEvent() {
                 </div>
               </div>
 
+              <div className="space-y-2 text-left">
+                <FormInput
+                  control={form.control}
+                  name="event_description"
+                  label="Event Description"
+                  placeholder="Enter event description"
+                />
+              </div>
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
                 <div className="space-y-2 text-left">
-                  <label className="text-sm font-medium">Event Starting Date</label>
-                  <div className="relative max-w-sm">
+                  <label className="text-sm font-medium">Event Date</label>
+                  <div className="relative">
                     <FormInput
                       control={form.control}
-                      name="start_date"
-                      type="date"
-                    />
-                    <Calendar className="absolute right-3 top-2.5 h-5 w-5 text-gray-400" />
-                  </div>
-                </div>
-                <div className="space-y-2 text-left">
-                  <label className="text-sm font-medium">Event Ending Date</label>
-                  <div className="relative max-w-sm">
-                    <FormInput
-                      control={form.control}
-                      name="end_date"
+                      name="event_date"
                       type="date"
                     />
                     <Calendar className="absolute right-3 top-2.5 h-5 w-5 text-gray-400" />
@@ -156,126 +143,24 @@ export default function CreateEvent() {
               <div className="space-y-2 text-left">
                 <FormInput
                   control={form.control}
-                  name="street_address"
-                  label="Street Address"
-                  placeholder="Enter street address"
-                  className="max-w-lg"
+                  name="address"
+                  label="Event Address"
+                  placeholder="Enter event address"
                 />
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
-                <FormInput
-                  control={form.control}
-                  name="post_code"
-                  label="Post Code"
-                  placeholder="Enter post code"
-                  className="max-w-sm"
-                />
-                <div className="space-y-2 text-left">
-                  <label className="text-sm font-medium">City</label>
-                  <Select
-                    onValueChange={(value) =>
-                      form.setValue("city", value, { shouldValidate: true })
-                    }
-                  >
-                    <SelectTrigger className="max-w-sm">
-                      <SelectValue placeholder="Select city" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {cities.map((city) => (
-                        <SelectItem key={city} value={city.toLowerCase()}>
-                          {city}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
-                <div className="space-y-2 text-left">
-                  <label className="text-sm font-medium">Country</label>
-                  <Select
-                    onValueChange={(value) =>
-                      form.setValue("country", value, { shouldValidate: true })
-                    }
-                  >
-                    <SelectTrigger className="max-w-sm">
-                      <SelectValue placeholder="Select country" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {countries.map((country) => (
-                        <SelectItem key={country} value={country.toLowerCase()}>
-                          {country}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2 text-left">
-                  <label className="text-sm font-medium">LGA</label>
-                  <Select
-                    onValueChange={(value) =>
-                      form.setValue("lga", value, { shouldValidate: true })
-                    }
-                  >
-                    <SelectTrigger className="max-w-sm">
-                      <SelectValue placeholder="Select LGA" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {lgas.map((lga) => (
-                        <SelectItem key={lga} value={lga.toLowerCase()}>
-                          {lga}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
               </div>
 
               <div className="space-y-2 text-left">
-                <label className="text-sm font-medium">
-                  Reconciliation Service
-                </label>
-                <div className="flex gap-6">
-                  <label className="flex items-center gap-2">
-                    <input
-                      type="radio"
-                      name="reconciliation_service"
-                      value="yes"
-                      onChange={() =>
-                        form.setValue("reconciliation_service", true, {
-                          shouldValidate: true,
-                        })
-                      }
-                      className="form-radio"
-                    />
-                    <span>Yes</span>
-                  </label>
-                  <label className="flex items-center gap-2">
-                    <input
-                      type="radio"
-                      name="reconciliation_service"
-                      value="no"
-                      onChange={() =>
-                        form.setValue("reconciliation_service", false, {
-                          shouldValidate: true,
-                        })
-                      }
-                      className="form-radio"
-                    />
-                    <span>No</span>
-                  </label>
-                </div>
+                <FormInput
+                  control={form.control}
+                  name="delivery_address"
+                  label="Delivery Address (optional)"
+                  placeholder="Enter delivery address if different from event address"
+                />
               </div>
-
-              {error && (
-                <div className="text-red-500 text-sm mt-2">{error}</div>
-              )}
 
               <Button
                 type="submit"
-                className="w-full md:w-auto px-8 bg-gold hover:bg-gold/90 text-white"
+                className="w-full md:w-auto px-8 bg-bluePrimary hover:bg-bluePrimary/90 text-white"
                 disabled={isSubmitting}
               >
                 {isSubmitting ? "Creating Event..." : "Create Event"}
@@ -285,35 +170,12 @@ export default function CreateEvent() {
         </main>
       </div>
 
-      {/* Success Modal */}
       {showSuccessModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white p-6 rounded-lg max-w-md w-full">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-semibold text-green-600">
-                Event Created Successfully!
-              </h2>
-              <button
-                onClick={() => setShowSuccessModal(false)}
-                className="text-gray-500 hover:text-gray-700"
-              >
-                <X className="h-5 w-5" />
-              </button>
-            </div>
-            <p className="text-gray-600 mb-4">
-              Below is your unique Event ID. You can copy it for future reference.
-            </p>
-            <div className="bg-gray-100 p-3 rounded mb-4 text-center">
-              <code>{eventId}</code>
-            </div>
-            <Button
-              className="w-full bg-blueSecondary hover:bg-blueSecondary/90 text-white"
-              onClick={() => navigate("/templates")}
-            >
-              Choose Currency Template
-            </Button>
-          </div>
-        </div>
+        <EventSuccessModal
+          eventId={eventId}
+          onClose={() => setShowSuccessModal(false)}
+          onNavigate={() => navigate("/templates")}
+        />
       )}
     </div>
   );
