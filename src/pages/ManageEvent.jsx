@@ -33,10 +33,10 @@ const demoConcludedEvents = [
 ];
 
 const EventCard = ({ event }) => (
-  <div className="bg-[#F1F0FB] rounded-lg p-4 mb-4 shadow-sm">
-    <div className="flex justify-between items-center">
+  <div className="bg-softbg rounded-lg p-4 mb-4 shadow-sm">
+    <div className="flex justify-between items-left">
       <div>
-        <h3 className="text-lg font-semibold text-bluePrimary">{event.name}</h3>
+        <h3 className="text-lg font-semibold">{event.name}</h3>
         <p className="text-sm text-gray-600">{event.date}</p>
       </div>
       <Button
