@@ -224,6 +224,3 @@ export default function ForgotPasswordPage() {
     </AuthFormWrapper>
   );
 }
-// /auth/password/code for requesting code
-// /auth/password/token for verifying code
-// /auth/password/reset for resetting password)
