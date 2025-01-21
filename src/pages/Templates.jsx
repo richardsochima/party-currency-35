@@ -13,19 +13,19 @@ export default function Templates() {
     {
       id: 1,
       denomination: "200",
-      image: "/lovable-uploads/3038b010-3f71-40af-971b-cd5665ca3497.png",
+      image: "/lovable-uploads/aa99ff96-d8a0-496f-b5b4-2fbbdfd720ec.png",
       title: "Celebration of Life"
     },
     {
       id: 2,
       denomination: "500",
-      image: "/lovable-uploads/67853c60-ef4c-4132-b2e2-6da7e8d8f4ea.png",
+      image: "/lovable-uploads/33b3f1c6-258f-4915-9ff1-a9557ca6a301.png",
       title: "Happy Birthday!"
     },
     {
       id: 3,
       denomination: "1000",
-      image: "/lovable-uploads/67853c60-ef4c-4132-b2e2-6da7e8d8f4ea.png",
+      image: "/lovable-uploads/00bd2752-0223-42cb-a371-bcd314faa8e9.png",
       title: "Happy Birthday!"
     },
   ];
@@ -69,7 +69,7 @@ export default function Templates() {
                       <div className="absolute bottom-4 right-4">
                         <Button
                           variant="secondary"
-                          className="bg-white/90 hover:bg-white text-bluePrimary font-medium"
+                          className="bg-bluePrimary hover:bg-bluePrimary/90 text-white font-medium"
                         >
                           Customize
                         </Button>
