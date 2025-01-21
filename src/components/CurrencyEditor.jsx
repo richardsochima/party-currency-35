@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { fabric as fabricjs } from "fabric";
+import fabric from "fabric";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,13 +14,13 @@ export function CurrencyEditor({ currencyImage, onClose }) {
   useEffect(() => {
     if (!canvasRef.current) return;
 
-    const fabricCanvas = new fabricjs.Canvas(canvasRef.current, {
+    const fabricCanvas = new fabric.Canvas(canvasRef.current, {
       width: 800,
       height: 400,
     });
 
     // Load the base currency template
-    fabricjs.Image.fromURL(currencyImage, (img) => {
+    fabric.Image.fromURL(currencyImage, (img) => {
       img.scaleToWidth(fabricCanvas.width);
       fabricCanvas.setBackgroundImage(img, fabricCanvas.renderAll.bind(fabricCanvas));
     });
@@ -38,9 +38,9 @@ export function CurrencyEditor({ currencyImage, onClose }) {
 
     const reader = new FileReader();
     reader.onload = (event) => {
-      fabricjs.Image.fromURL(event.target.result, (img) => {
+      fabric.Image.fromURL(event.target.result, (img) => {
         // Create oval clip path
-        const clipPath = new fabricjs.Ellipse({
+        const clipPath = new fabric.Ellipse({
           rx: 100,
           ry: 120,
           originX: 'center',
@@ -68,7 +68,7 @@ export function CurrencyEditor({ currencyImage, onClose }) {
     setPrimaryColor(color);
     
     // Apply color overlay
-    const overlay = new fabricjs.Rect({
+    const overlay = new fabric.Rect({
       width: canvas.width,
       height: canvas.height,
       fill: color,
@@ -99,7 +99,7 @@ export function CurrencyEditor({ currencyImage, onClose }) {
     if (existingText) {
       existingText.set('text', newText);
     } else {
-      const textObject = new fabricjs.Text(newText, {
+      const textObject = new fabric.Text(newText, {
         left: 400,
         top: 300,
         fontFamily: 'Arial',
