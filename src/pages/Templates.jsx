@@ -4,9 +4,11 @@ import DashboardHeader from "../components/DashboardHeader";
 import { useAuthenticated } from "../lib/hooks";
 import { LoadingDisplay } from "@/components/LoadingDisplay";
 import { Button } from "@/components/ui/button";
+import { CurrencyEditor } from "@/components/CurrencyEditor";
 
 export default function Templates() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [showEditor, setShowEditor] = useState(false);
   const authenticated = useAuthenticated();
 
   const currencies = [
@@ -65,16 +67,18 @@ export default function Templates() {
                       alt={`${currency.denomination} denomination`}
                       className="w-full h-auto"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <div className="absolute bottom-4 right-4">
-                        <Button
-                          variant="secondary"
-                          className="bg-bluePrimary hover:bg-bluePrimary/90 text-white font-medium"
-                        >
-                          Customize
-                        </Button>
+                    {currency.denomination === "200" && (
+                      <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/50 via-black/25 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <div className="absolute bottom-4 right-4">
+                          <Button
+                            onClick={() => setShowEditor(true)}
+                            className="bg-bluePrimary hover:bg-bluePrimary/90 text-white font-medium"
+                          >
+                            Customize
+                          </Button>
+                        </div>
                       </div>
-                    </div>
+                    )}
                   </div>
                 </div>
               ))}
@@ -82,6 +86,13 @@ export default function Templates() {
           </div>
         </main>
       </div>
+
+      {showEditor && (
+        <CurrencyEditor
+          currencyImage="/lovable-uploads/aa99ff96-d8a0-496f-b5b4-2fbbdfd720ec.png"
+          onClose={() => setShowEditor(false)}
+        />
+      )}
     </div>
   );
 }
