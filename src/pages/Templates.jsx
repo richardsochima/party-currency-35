@@ -13,17 +13,20 @@ export default function Templates() {
     {
       id: 1,
       denomination: "200",
-      image: "/currency-200.png",
+      image: "/lovable-uploads/3038b010-3f71-40af-971b-cd5665ca3497.png",
+      title: "Celebration of Life"
     },
     {
       id: 2,
       denomination: "500",
-      image: "/currency-500.png",
+      image: "/lovable-uploads/67853c60-ef4c-4132-b2e2-6da7e8d8f4ea.png",
+      title: "Happy Birthday!"
     },
     {
       id: 3,
       denomination: "1000",
-      image: "/currency-1000.png",
+      image: "/lovable-uploads/67853c60-ef4c-4132-b2e2-6da7e8d8f4ea.png",
+      title: "Happy Birthday!"
     },
   ];
 
@@ -46,33 +49,31 @@ export default function Templates() {
         <DashboardHeader toggleMobileMenu={toggleMobileMenu} />
 
         <main className="p-6">
-          <div className="max-w-7xl mx-auto">
-            <h1 className="text-2xl font-semibold mb-6">Currency Templates</h1>
+          <div className="max-w-4xl mx-auto">
+            <h1 className="text-2xl font-semibold mb-2">Currency Template</h1>
+            <p className="text-gray-600 mb-6">Select a currency template to preview and personalize.</p>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="flex flex-col gap-6">
               {currencies.map((currency) => (
                 <div
                   key={currency.id}
-                  className="bg-white rounded-lg shadow-md overflow-hidden"
+                  className="relative group bg-white rounded-lg shadow-md overflow-hidden"
                 >
-                  <div className="aspect-[16/9] relative">
+                  <div className="relative">
                     <img
                       src={currency.image}
                       alt={`${currency.denomination} denomination`}
-                      className="w-full h-full object-cover"
+                      className="w-full h-auto"
                     />
-                  </div>
-                  <div className="p-4">
-                    <div className="flex justify-between items-center">
-                      <h3 className="text-lg font-semibold">
-                        {currency.denomination} Denomination
-                      </h3>
-                      <Button
-                        variant="outline"
-                        className="text-bluePrimary border-bluePrimary hover:bg-bluePrimary hover:text-white"
-                      >
-                        Customize
-                      </Button>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <div className="absolute bottom-4 right-4">
+                        <Button
+                          variant="secondary"
+                          className="bg-white/90 hover:bg-white text-bluePrimary font-medium"
+                        >
+                          Customize
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 </div>
