@@ -1,26 +1,13 @@
 import React, { useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Calendar } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
+import { toast } from "react-hot-toast";
 import DashboardSidebar from "@/components/DashboardSidebar";
 import DashboardHeader from "@/components/DashboardHeader";
-import { FormInput } from "@/components/forms/FormInput";
-import { Button } from "@/components/ui/button";
-import { Form } from "@/components/ui/form";
-import { eventSchema } from "@/lib/validations/event";
-import { useAuthenticated } from "@/lib/hooks";
-import { LoadingDisplay } from "@/components/LoadingDisplay";
 import { EventSuccessModal } from "@/components/events/EventSuccessModal";
-import { createEvent } from "@/services/eventService";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { getAuth } from "@/lib/util";
+import { BASE_URL } from "@/config";
 
 const eventTypes = [
   "Birthday",
@@ -31,53 +18,84 @@ const eventTypes = [
   "Other",
 ];
 
-const cities = ["Lagos", "Ibadan", "Abuja", "Port Harcourt", "Kano"];
-const countries = ["Nigeria"];
-const lgas = ["Ibadan North", "Ibadan South", "Akinyele", "Egbeda"];
-
 export default function CreateEvent() {
+  const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [eventId, setEventId] = useState("");
-  const navigate = useNavigate();
-  const authenticated = useAuthenticated();
-
-  const form = useForm({
-    resolver: zodResolver(eventSchema),
-    defaultValues: {
-      event_name: "",
-      event_description: "",
-      event_date: "",
-      address: "",
-      delivery_address: "",
-    },
+  const [formData, setFormData] = useState({
+    event_name: "",
+    event_type: "",
+    start_date: "",
+    end_date: "",
+    street_address: "",
+    city: "",
+    country: "Nigeria",
+    post_code: "",
+    reconciliation_service: false,
   });
 
-  const onSubmit = async (data) => {
+  const validateDates = () => {
+    const start = new Date(formData.start_date);
+    const end = new Date(formData.end_date);
+    if (end < start) {
+      toast.error("End date must be after start date");
+      return false;
+    }
+    return true;
+  };
+
+  const validatePostCode = () => {
+    const postCodeRegex = /^\d{6}$/;
+    if (!postCodeRegex.test(formData.post_code)) {
+      toast.error("Post code must be 6 digits");
+      return false;
+    }
+    return true;
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (!validateDates() || !validatePostCode()) {
+      return;
+    }
+
     setIsSubmitting(true);
     try {
-      const result = await createEvent({
-        event_name: data.event_name,
-        event_description: data.event_description || "",
-        event_date: data.event_date,
-        address: data.address,
-        delivery_address: data.delivery_address || data.address,
+      const { accessToken } = getAuth();
+      const response = await fetch(`${BASE_URL}/events/create`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Token ${accessToken}`,
+        },
+        body: JSON.stringify(formData),
       });
 
-      setEventId(result.event_id);
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to create event");
+      }
+
+      setEventId(data.event_id);
       setShowSuccessModal(true);
       toast.success("Event created successfully!");
     } catch (error) {
-      console.error("Error creating event:", error);
-      toast.error(error.message || "Failed to create event. Please try again.");
+      toast.error(error.message || "Failed to create event");
     } finally {
       setIsSubmitting(false);
     }
   };
-
-  if (!authenticated) {
-    return <LoadingDisplay />;
-  }
 
   return (
     <div className="min-h-screen bg-white">
@@ -85,88 +103,134 @@ export default function CreateEvent() {
       <div className="md:pl-64 flex flex-col min-h-screen">
         <DashboardHeader />
         <main className="flex-1 p-4 md:p-8 max-w-4xl mx-auto w-full">
-          <h1 className="text-2xl font-semibold mb-8 text-left">Event Details</h1>
+          <h1 className="text-2xl font-semibold mb-8 text-left">Create Event</h1>
 
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 md:space-y-8">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
-                <FormInput
-                  control={form.control}
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Event Name</label>
+                <Input
+                  required
                   name="event_name"
-                  label="Event Name"
-                  placeholder="Enter the event name"
-                />
-                <div className="space-y-2 text-left">
-                  <label className="text-sm font-medium">Event Type</label>
-                  <Select
-                    onValueChange={(value) =>
-                      form.setValue("event_type", value, { shouldValidate: true })
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select event type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {eventTypes.map((type) => (
-                        <SelectItem key={type} value={type.toLowerCase()}>
-                          {type}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              <div className="space-y-2 text-left">
-                <FormInput
-                  control={form.control}
-                  name="event_description"
-                  label="Event Description"
-                  placeholder="Enter event description"
+                  value={formData.event_name}
+                  onChange={handleInputChange}
+                  minLength={3}
+                  maxLength={100}
+                  placeholder="Enter event name"
                 />
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
-                <div className="space-y-2 text-left">
-                  <label className="text-sm font-medium">Event Date</label>
-                  <div className="relative">
-                    <FormInput
-                      control={form.control}
-                      name="event_date"
-                      type="date"
-                    />
-                    <Calendar className="absolute right-3 top-2.5 h-5 w-5 text-gray-400" />
-                  </div>
-                </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Event Type</label>
+                <select
+                  required
+                  name="event_type"
+                  value={formData.event_type}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border rounded-md"
+                >
+                  <option value="">Select event type</option>
+                  {eventTypes.map((type) => (
+                    <option key={type} value={type.toLowerCase()}>
+                      {type}
+                    </option>
+                  ))}
+                </select>
               </div>
 
-              <div className="space-y-2 text-left">
-                <FormInput
-                  control={form.control}
-                  name="address"
-                  label="Event Address"
-                  placeholder="Enter event address"
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Start Date</label>
+                <Input
+                  required
+                  type="date"
+                  name="start_date"
+                  value={formData.start_date}
+                  onChange={handleInputChange}
+                  min={new Date().toISOString().split("T")[0]}
                 />
               </div>
 
-              <div className="space-y-2 text-left">
-                <FormInput
-                  control={form.control}
-                  name="delivery_address"
-                  label="Delivery Address (optional)"
-                  placeholder="Enter delivery address if different from event address"
+              <div className="space-y-2">
+                <label className="text-sm font-medium">End Date</label>
+                <Input
+                  required
+                  type="date"
+                  name="end_date"
+                  value={formData.end_date}
+                  onChange={handleInputChange}
+                  min={formData.start_date || new Date().toISOString().split("T")[0]}
                 />
               </div>
 
-              <Button
-                type="submit"
-                className="w-full md:w-auto px-8 bg-bluePrimary hover:bg-bluePrimary/90 text-white"
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? "Creating Event..." : "Create Event"}
-              </Button>
-            </form>
-          </Form>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Street Address</label>
+                <Input
+                  required
+                  name="street_address"
+                  value={formData.street_address}
+                  onChange={handleInputChange}
+                  placeholder="Enter street address"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Post Code</label>
+                <Input
+                  required
+                  name="post_code"
+                  value={formData.post_code}
+                  onChange={handleInputChange}
+                  placeholder="Enter 6-digit post code"
+                  pattern="\d{6}"
+                  title="Post code must be 6 digits"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium">City</label>
+                <Input
+                  required
+                  name="city"
+                  value={formData.city}
+                  onChange={handleInputChange}
+                  placeholder="Enter city"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Country</label>
+                <Input
+                  required
+                  name="country"
+                  value={formData.country}
+                  onChange={handleInputChange}
+                  disabled
+                />
+              </div>
+            </div>
+
+            <div className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                id="reconciliation_service"
+                name="reconciliation_service"
+                checked={formData.reconciliation_service}
+                onChange={handleInputChange}
+                className="w-4 h-4 text-blue-600"
+              />
+              <label htmlFor="reconciliation_service" className="text-sm font-medium">
+                Enable Reconciliation Service
+              </label>
+            </div>
+
+            <Button
+              type="submit"
+              className="w-full md:w-auto px-8 bg-bluePrimary hover:bg-bluePrimary/90 text-white"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Creating Event..." : "Create Event"}
+            </Button>
+          </form>
         </main>
       </div>
 
