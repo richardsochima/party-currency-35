@@ -1,5 +1,6 @@
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -7,18 +8,35 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { toast } from "react-hot-toast";
 
 const fetchStates = async () => {
-  const response = await fetch("https://nga-states-lga.onrender.com/fetch");
-  const data = await response.json();
-  return data.states;
+  try {
+    const response = await fetch("https://nga-states-lga.onrender.com/fetch");
+    if (!response.ok) {
+      throw new Error("Failed to fetch states");
+    }
+    const data = await response.json();
+    return data.states;
+  } catch (error) {
+    console.error("Error fetching states:", error);
+    throw new Error("Unable to load states. Please try again later.");
+  }
 };
 
 const fetchLGAs = async (state) => {
   if (!state) return [];
-  const response = await fetch(`https://nga-states-lga.onrender.com/?state=${state}`);
-  const data = await response.json();
-  return data.lga;
+  try {
+    const response = await fetch(`https://nga-states-lga.onrender.com/?state=${state}`);
+    if (!response.ok) {
+      throw new Error("Failed to fetch LGAs");
+    }
+    const data = await response.json();
+    return data.lga;
+  } catch (error) {
+    console.error("Error fetching LGAs:", error);
+    throw new Error("Unable to load LGAs. Please try again later.");
+  }
 };
 
 export function LocationSelect({ formData, handleInputChange }) {
@@ -28,7 +46,10 @@ export function LocationSelect({ formData, handleInputChange }) {
     error: statesError
   } = useQuery({
     queryKey: ["states"],
-    queryFn: fetchStates
+    queryFn: fetchStates,
+    onError: (error) => {
+      toast.error(error.message);
+    }
   });
 
   const {
@@ -38,7 +59,10 @@ export function LocationSelect({ formData, handleInputChange }) {
   } = useQuery({
     queryKey: ["lgas", formData.state],
     queryFn: () => fetchLGAs(formData.state),
-    enabled: !!formData.state
+    enabled: !!formData.state,
+    onError: (error) => {
+      toast.error(error.message);
+    }
   });
 
   const handleStateChange = (value) => {
@@ -65,10 +89,6 @@ export function LocationSelect({ formData, handleInputChange }) {
     });
   };
 
-  if (statesError || lgasError) {
-    return <div>Error loading location data</div>;
-  }
-
   return (
     <>
       <div className="space-y-2">
@@ -89,6 +109,17 @@ export function LocationSelect({ formData, handleInputChange }) {
             ))}
           </SelectContent>
         </Select>
+      </div>
+
+      <div className="space-y-2">
+        <label className="text-sm font-medium text-left block">City</label>
+        <Input
+          name="city"
+          value={formData.city || ""}
+          onChange={handleInputChange}
+          placeholder="Enter city name"
+          className="w-full"
+        />
       </div>
 
       <div className="space-y-2">
