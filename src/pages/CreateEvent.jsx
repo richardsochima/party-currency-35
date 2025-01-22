@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
+import { useQuery } from "@tanstack/react-query";
 import DashboardSidebar from "@/components/DashboardSidebar";
 import DashboardHeader from "@/components/DashboardHeader";
 import { EventSuccessModal } from "@/components/events/EventSuccessModal";
@@ -8,6 +9,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { getAuth } from "@/lib/util";
 import { BASE_URL } from "@/config";
+import { fetchStates, fetchLGAs } from "@/services/locationService";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Loader } from "lucide-react";
 
 const eventTypes = [
   "Birthday",
@@ -23,15 +33,27 @@ export default function CreateEvent() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [eventId, setEventId] = useState("");
+  const [selectedState, setSelectedState] = useState("");
+
+  const { data: states, isLoading: statesLoading, error: statesError } = useQuery({
+    queryKey: ['states'],
+    queryFn: fetchStates,
+  });
+
+  const { data: lgas, isLoading: lgasLoading, error: lgasError } = useQuery({
+    queryKey: ['lgas', selectedState],
+    queryFn: () => selectedState ? fetchLGAs(selectedState) : null,
+    enabled: !!selectedState,
+  });
+
   const [formData, setFormData] = useState({
     event_name: "",
     event_type: "",
     start_date: "",
     end_date: "",
     street_address: "",
-    city: "",
-    country: "Nigeria",
-    post_code: "",
+    state: "",
+    lga: "",
     reconciliation_service: false,
   });
 
@@ -45,15 +67,6 @@ export default function CreateEvent() {
     return true;
   };
 
-  const validatePostCode = () => {
-    const postCodeRegex = /^\d{6}$/;
-    if (!postCodeRegex.test(formData.post_code)) {
-      toast.error("Post code must be 6 digits");
-      return false;
-    }
-    return true;
-  };
-
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
@@ -62,10 +75,26 @@ export default function CreateEvent() {
     }));
   };
 
+  const handleStateChange = (value) => {
+    setSelectedState(value);
+    setFormData(prev => ({
+      ...prev,
+      state: value,
+      lga: "", // Reset LGA when state changes
+    }));
+  };
+
+  const handleLGAChange = (value) => {
+    setFormData(prev => ({
+      ...prev,
+      lga: value,
+    }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (!validateDates() || !validatePostCode()) {
+    if (!validateDates()) {
       return;
     }
 
@@ -97,6 +126,10 @@ export default function CreateEvent() {
     }
   };
 
+  if (statesError || lgasError) {
+    toast.error("Failed to load location data. Please try again.");
+  }
+
   return (
     <div className="min-h-screen bg-white">
       <DashboardSidebar />
@@ -108,7 +141,7 @@ export default function CreateEvent() {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <label className="text-sm font-medium">Event Name</label>
+                <label className="text-sm font-medium text-left block">Event Name</label>
                 <Input
                   required
                   name="event_name"
@@ -121,7 +154,7 @@ export default function CreateEvent() {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium">Event Type</label>
+                <label className="text-sm font-medium text-left block">Event Type</label>
                 <select
                   required
                   name="event_type"
@@ -139,7 +172,7 @@ export default function CreateEvent() {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium">Start Date</label>
+                <label className="text-sm font-medium text-left block">Start Date</label>
                 <Input
                   required
                   type="date"
@@ -151,7 +184,7 @@ export default function CreateEvent() {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium">End Date</label>
+                <label className="text-sm font-medium text-left block">End Date</label>
                 <Input
                   required
                   type="date"
@@ -163,7 +196,7 @@ export default function CreateEvent() {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium">Street Address</label>
+                <label className="text-sm font-medium text-left block">Street Address</label>
                 <Input
                   required
                   name="street_address"
@@ -174,38 +207,49 @@ export default function CreateEvent() {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium">Post Code</label>
-                <Input
-                  required
-                  name="post_code"
-                  value={formData.post_code}
-                  onChange={handleInputChange}
-                  placeholder="Enter 6-digit post code"
-                  pattern="\d{6}"
-                  title="Post code must be 6 digits"
-                />
+                <label className="text-sm font-medium text-left block">State</label>
+                <Select
+                  value={formData.state}
+                  onValueChange={handleStateChange}
+                  disabled={statesLoading}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder={statesLoading ? "Loading states..." : "Select state"} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {states?.map((state) => (
+                      <SelectItem key={state} value={state}>
+                        {state}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium">City</label>
-                <Input
-                  required
-                  name="city"
-                  value={formData.city}
-                  onChange={handleInputChange}
-                  placeholder="Enter city"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Country</label>
-                <Input
-                  required
-                  name="country"
-                  value={formData.country}
-                  onChange={handleInputChange}
-                  disabled
-                />
+                <label className="text-sm font-medium text-left block">LGA</label>
+                <Select
+                  value={formData.lga}
+                  onValueChange={handleLGAChange}
+                  disabled={!selectedState || lgasLoading}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder={
+                      !selectedState 
+                        ? "Select a state first" 
+                        : lgasLoading 
+                          ? "Loading LGAs..." 
+                          : "Select LGA"
+                    } />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {lgas?.map((lga) => (
+                      <SelectItem key={lga} value={lga}>
+                        {lga}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             </div>
 
@@ -218,17 +262,24 @@ export default function CreateEvent() {
                 onChange={handleInputChange}
                 className="w-4 h-4 text-blue-600"
               />
-              <label htmlFor="reconciliation_service" className="text-sm font-medium">
+              <label htmlFor="reconciliation_service" className="text-sm font-medium text-left">
                 Enable Reconciliation Service
               </label>
             </div>
 
             <Button
               type="submit"
-              className="w-full md:w-auto px-8 bg-bluePrimary hover:bg-bluePrimary/90 text-white"
+              className="w-full md:w-auto px-8 bg-gold hover:bg-gold/90 text-white"
               disabled={isSubmitting}
             >
-              {isSubmitting ? "Creating Event..." : "Create Event"}
+              {isSubmitting ? (
+                <>
+                  <Loader className="mr-2 h-4 w-4 animate-spin" />
+                  Creating Event...
+                </>
+              ) : (
+                "Create Event"
+              )}
             </Button>
           </form>
         </main>
