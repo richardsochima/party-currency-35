@@ -15,19 +15,19 @@ export default function Templates() {
     {
       id: 1,
       denomination: "200",
-      image: "/lovable-uploads/aa99ff96-d8a0-496f-b5b4-2fbbdfd720ec.png",
+      image: "/lovable-uploads/200-front.jpg",
       title: "Celebration of Life"
     },
     {
       id: 2,
       denomination: "500",
-      image: "/lovable-uploads/33b3f1c6-258f-4915-9ff1-a9557ca6a301.png",
+      image: "/lovable-uploads/500-front.jpg",
       title: "Happy Birthday!"
     },
     {
       id: 3,
       denomination: "1000",
-      image: "/lovable-uploads/00bd2752-0223-42cb-a371-bcd314faa8e9.png",
+      image: "/lovable-uploads/500-front.jpg",
       title: "Happy Birthday!"
     },
   ];
