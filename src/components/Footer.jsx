@@ -95,7 +95,7 @@ const Footer = () => {
         </div>
       </div>
 
-      <div className="flex justify-center mt-10 space-x-6">
+      <div className="flex justify-start mt-10 space-x-6">
         <FontAwesomeIcon
           icon={faTwitter}
           className="text-secbutton text-2xl hover:scale-110"

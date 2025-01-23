@@ -168,20 +168,6 @@ const Contact = () => {
                   </svg>
                 </div>
                 <div>
-                  <h5 className="text-sm font-semibold text-paragraph">WhatsApp</h5>
-                  <p className="text-sm text-gray-600">+1 (240) 481-5186</p>
-                </div>
-              </a>
-
-              {/* Email */}
-              <a href="mailto:partycurrency@gmail.com" className="flex items-center gap-3 p-2 hover:bg-gray-100 rounded-lg transition-colors">
-                <div className="w-10 h-10 flex items-center justify-center">
-                  <svg width="40" height="40" viewBox="0 0 70 71" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="1" y="1.5" width="68" height="68" rx="34" stroke="#6A7BA2" strokeWidth="2"/>
-                    <path d="M45 25.5H25C23.625 25.5 22.5125 26.625 22.5125 28L22.5 43C22.5 44.375 23.625 45.5 25 45.5H45C46.375 45.5 47.5 44.375 47.5 43V28C47.5 26.625 46.375 25.5 45 25.5ZM45 30.5L35 36.75L25 30.5V28L35 34.25L45 28V30.5Z" fill="#6A7BA2"/>
-                  </svg>
-                </div>
-                <div>
                   <h5 className="text-sm font-semibold text-paragraph">Email Address</h5>
                   <p className="text-sm text-gray-600">partycurrency@gmail.com</p>
                 </div>
