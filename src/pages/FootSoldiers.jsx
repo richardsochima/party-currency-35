@@ -5,6 +5,7 @@ import AppleIcon from "../assets/app-icons/apple-icon.svg";
 import AndroidIcon from "../assets/app-icons/android-icon.svg";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import FloatingContactButton from "../components/FloatingContactButton";
 
 const FootSoldiers = () => {
   return (
@@ -124,6 +125,9 @@ const FootSoldiers = () => {
         </div>
       </section>
 
+      {/* Floating Contact Button */}
+      <FloatingContactButton />
+
       {/* Footer */}
       <Footer />
     </div>
@@ -131,3 +135,4 @@ const FootSoldiers = () => {
 };
 
 export default FootSoldiers;
+
