@@ -1,6 +1,5 @@
 import React from "react";
 import half_bg from "../assets/features/half_bg.png";
-import currency from "../assets/features/currency.svg";
 import AppleIcon from "../assets/app-icons/apple-icon.svg";
 import AndroidIcon from "../assets/app-icons/android-icon.svg";
 import { LazyImage } from "../components/LazyImage";
@@ -48,7 +47,7 @@ const CustomCurrency = () => {
           {/* Currency Image */}
           <div className="mb-8">
             <LazyImage
-              src={currency}
+              src="/200-front.jpg"
               alt="Custom Currency"
               className="w-full max-w-[700px] mx-auto rounded-md shadow-md"
             />
