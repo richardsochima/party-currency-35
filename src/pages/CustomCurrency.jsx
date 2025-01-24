@@ -47,7 +47,7 @@ const CustomCurrency = () => {
           {/* Currency Image */}
           <div className="mb-8">
             <LazyImage
-              src="/200-front.jpg"
+              src="/lovable-uploads/200-front.jpg"
               alt="Custom Currency"
               className="w-full max-w-[700px] mx-auto rounded-md shadow-md"
             />
