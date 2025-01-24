@@ -6,13 +6,13 @@ import AndroidIcon from "../assets/app-icons/android-icon.svg";
 import { LazyImage } from "../components/LazyImage";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import FloatingContactButton from "../components/FloatingContactButton";
 
 const CustomCurrency = () => {
   return (
     <div>
-      {/* Header */}
       <Header />
-
+      <FloatingContactButton />
       {/* Hero Section */}
       <section
         id="custom-currency"
