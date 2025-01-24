@@ -69,35 +69,32 @@ export default function Templates() {
               Select a currency template to preview and personalize.
             </p>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="flex flex-col gap-6">
               {currencies.map((currency) => (
                 <div
                   key={currency.id}
-                  className="bg-white rounded-lg shadow-md overflow-hidden group"
+                  className="relative group bg-white rounded-lg shadow-md overflow-hidden"
                 >
-                  <div className="relative aspect-[3/2]">
+                  <div className="relative">
                     <img
                       src={currency.image}
-                      alt={`₦${currency.denomination} denomination`}
-                      className="w-full h-full object-cover"
+                      alt={`${currency.denomination} denomination`}
+                      className="w-full h-auto"
                     />
-                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                      <Button
-                        onClick={() => handleCustomize(currency.path)}
-                        className="bg-bluePrimary hover:bg-bluePrimary/90 text-white font-medium"
-                      >
-                        Customize
-                      </Button>
+                    <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/50 via-black/25 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <div className="absolute bottom-4 right-4">
+                        <Button
+                          onClick={() => navigate(currency.path)}
+                          className="bg-bluePrimary hover:bg-bluePrimary/90 text-white font-medium"
+                        >
+                          Customize
+                        </Button>
+                      </div>
                     </div>
-                  </div>
-                  <div className="p-4">
-                    <h3 className="text-lg font-semibold text-bluePrimary">₦{currency.denomination}</h3>
-                    <p className="text-gray-600">{currency.title}</p>
                   </div>
                 </div>
               ))}
             </div>
-
             <div className="mt-8">
               <CurrencyBreakdown isEnabled={isCustomized} />
             </div>
