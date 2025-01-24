@@ -110,7 +110,7 @@ export const MobileMenu = ({
               </Link>
               <Link
                 to="/vendor-kiosk-system"
-                className="text-left text-sm text-white"}
+                className="text-left text-sm text-white"
               >
                 Vendor Kiosk System
               </Link>
