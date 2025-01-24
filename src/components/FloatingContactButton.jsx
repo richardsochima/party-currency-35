@@ -25,7 +25,7 @@ const FloatingContactButton = () => {
         <div className="fixed bottom-20 right-4 mb-4 bg-white rounded-t-2xl 
         rounded-b-none shadow-2xl p-4 z-50 w-[280px] animate-in fade-in slide-in-from-bottom-5">
           <div className="space-y-4">
-              <a href="tel:14371234744" className="flex items-center gap-3 p-2 hover:bg-gray-100 rounded-lg transition-colors">
+              <a href="tel:14371234744" className="flex gap-3 p-2 hover:bg-gray-100 rounded-lg transition-colors">
                 <div className="w-10 h-10 flex items-center justify-center">
                   <svg width="40" height="40" viewBox="0 0 70 71" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <rect x="1.5" y="1.5" width="68" height="68" rx="34" stroke="#6A7BA2" strokeWidth="2"/>
@@ -39,7 +39,7 @@ const FloatingContactButton = () => {
               </a>
 
               {/* WhatsApp */}
-              <a href="https://wa.me/12404815186" className="flex items-center gap-3 p-2 hover:bg-gray-100 rounded-lg transition-colors">
+              <a href="https://wa.me/12404815186" className="flex gap-3 p-2 hover:bg-gray-100 rounded-lg transition-colors">
                 <div className="w-10 h-10">
                   <svg width="40" height="40" viewBox="0 0 70 71" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <rect x="1" y="1.5" width="68" height="68" rx="34" stroke="#6A7BA2" strokeWidth="2"/>
@@ -54,7 +54,7 @@ const FloatingContactButton = () => {
               </a>
 
               {/* Email */}
-              <a href="mailto:partycurrency@gmail.com" className="flex items-center gap-3 p-2 hover:bg-gray-100 rounded-lg transition-colors">
+              <a href="mailto:partycurrency@gmail.com" className="flex gap-3 p-2 hover:bg-gray-100 rounded-lg transition-colors">
                 <div className="w-10 h-10 flex items-center justify-center">
                   <svg width="40" height="40" viewBox="0 0 70 71" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <rect x="1" y="1.5" width="68" height="68" rx="34" stroke="#6A7BA2" strokeWidth="2"/>
