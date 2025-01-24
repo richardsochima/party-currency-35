@@ -108,7 +108,8 @@ const Header = () => {
               </svg>
             </button>
           </div>
-          <UserAvatar auth={true} showName={false} />
+          <UserAvatar auth={true} showName={false} className="block md:hidden" />
+          <UserAvatar auth={true} showName={true} className="hidden md:flex" />
         </div>
       </div>
 
