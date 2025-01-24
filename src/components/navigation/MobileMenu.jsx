@@ -98,30 +98,27 @@ export const MobileMenu = ({
 
           {isMobileDropdownOpen && (
             <div className="flex flex-col gap-4 mt-2 ml-2">
-              <button
-                className="text-left text-sm text-white"
-                onClick={() => scrollToSection("custom-currency")}
-              >
+              <Link
+                to="/custom-currency"
+                className="text-left text-sm text-white">
                 Custom Currency
-              </button>
-              <button
-                className="text-left text-sm text-white"
-                onClick={() => scrollToSection("reconciliation-service")}
-              >
+              </Link>
+              <Link
+                to="/reconciliation-service"
+                className="text-left text-sm text-white">
                 Reconciliation Service
-              </button>
-              <button
-                className="text-left text-sm text-white"
-                onClick={() => scrollToSection("vendor-kiosk-system")}
+              </Link>
+              <Link
+                to="/vendor-kiosk-system"
+                className="text-left text-sm text-white"}
               >
                 Vendor Kiosk System
-              </button>
-              <button
-                className="text-left text-sm text-white"
-                onClick={() => scrollToSection("foot-soldiers")}
-              >
+              </Link>
+              <Link
+                to="/foot-soldiers"
+                className="text-left text-sm text-white">
                 Foot Soldiers
-              </button>
+              </Link>
             </div>
           )}
         </div>
