@@ -3,10 +3,15 @@ import half_bg from "../assets/features/half_bg.png";
 import FootSoldier from "../assets/features/FootSoldier.svg";
 import AppleIcon from "../assets/app-icons/apple-icon.svg";
 import AndroidIcon from "../assets/app-icons/android-icon.svg";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 const FootSoldiers = () => {
   return (
     <div>
+      {/* Header */}
+      <Header />
+
       {/* Hero Section */}
       <section
         id="foot-soldiers"
@@ -118,6 +123,9 @@ const FootSoldiers = () => {
           </div>
         </div>
       </section>
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 };

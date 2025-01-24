@@ -3,10 +3,15 @@ import half_bg from "../assets/features/half_bg.png";
 import reconciliation from "../assets/features/reconciliation.svg";
 import AppleIcon from "../assets/app-icons/apple-icon.svg";
 import AndroidIcon from "../assets/app-icons/android-icon.svg";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 const ReconciliationService = () => {
   return (
     <div>
+      {/* Header */}
+      <Header />
+
       {/* Hero Section */}
       <section
         id="reconciliation-service"
@@ -119,6 +124,9 @@ const ReconciliationService = () => {
           </div>
         </div>
       </section>
+      
+      {/* Footer */}
+      <Footer />
     </div>
   );
 };
