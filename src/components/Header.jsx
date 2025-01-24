@@ -87,6 +87,7 @@ const Header = () => {
         />
 
         <div className="flex items-center gap-4">
+          {/* Mobile Menu Toggle */}
           <div className="md:hidden">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -108,8 +109,14 @@ const Header = () => {
               </svg>
             </button>
           </div>
-          <UserAvatar auth={true} showName={false} className="block md:hidden" />
-          <UserAvatar auth={true} showName={true} className="hidden md:flex" />
+
+          {/* Auth Buttons and User Avatar */}
+          <div className="hidden md:flex items-center gap-4">
+            <UserAvatar auth={true} showName={true} />
+          </div>
+          <div className="md:hidden">
+            <UserAvatar auth={true} showName={false} />
+          </div>
         </div>
       </div>
 
