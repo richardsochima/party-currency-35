@@ -51,6 +51,7 @@ export default function ManageEvent() {
       return {
         ...defaultValues,
         name: event.event_name,
+        id: event.event_id,
         date: new Date().toISOString().split("T")[0],
       };
     });
