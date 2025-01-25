@@ -1,5 +1,4 @@
 import React from "react";
-import { useQuery } from "@tanstack/react-query";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Loader } from "lucide-react";
@@ -102,11 +101,21 @@ export function EventForm({ formData, handleInputChange, handleSubmit, isSubmitt
           />
         </div>
 
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-left block">Post Code</label>
+          <Input
+            required
+            name="post_code"
+            value={formData.post_code}
+            onChange={handleInputChange}
+            placeholder="Enter post code"
+          />
+        </div>
+
         <LocationSelect
           formData={formData}
           handleInputChange={handleInputChange}
         />
-
       </div>
 
       <div className="flex items-center space-x-2">
