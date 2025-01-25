@@ -27,7 +27,7 @@ const fetchStates = async () => {
 const fetchLGAs = async (state) => {
 	if (!state) return [];
 	try {
-		const response = await fetch('https://nga-states-lga.onrender.com/?state=${state}');
+		const response = await fetch(`https://nga-states-lga.onrender.com/?state=${state}`);
 		if (!response.ok) {
 			throw new Error('Failed to fetch LGAs');
 		}
