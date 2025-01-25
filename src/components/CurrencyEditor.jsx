@@ -13,13 +13,34 @@ export function CurrencyEditor({ currencyImage, onClose }) {
   const [currencyName, setCurrencyName] = useState("Party Currency");
   const [eventId, setEventId] = useState("1A3Bc5674F89djfnk");
 
+  // Text position configurations
+  const textPositions = {
+    celebration: { x: 400, y: 150 },
+    currency: { x: 400, y: 300 },
+    eventId: { x: 400, y: 350 }
+  };
+
   useEffect(() => {
     if (!canvasRef.current) return;
 
     const fabricCanvas = new fabric.fabric.Canvas(canvasRef.current, {
       width: 800,
       height: 400,
+      backgroundColor: '#ffffff'
     });
+
+    // Scale canvas for mobile responsiveness
+    const scaleCanvas = () => {
+      const container = document.querySelector('.canvas-container');
+      if (!container) return;
+      
+      const containerWidth = container.offsetWidth;
+      const scale = containerWidth / 800;
+      
+      fabricCanvas.setZoom(scale);
+      fabricCanvas.setWidth(containerWidth);
+      fabricCanvas.setHeight(400 * scale);
+    };
 
     // Load the template image
     fabric.fabric.Image.fromURL(currencyImage, (img) => {
@@ -28,9 +49,12 @@ export function CurrencyEditor({ currencyImage, onClose }) {
     });
 
     setCanvas(fabricCanvas);
+    scaleCanvas();
+    window.addEventListener('resize', scaleCanvas);
 
     return () => {
       fabricCanvas.dispose();
+      window.removeEventListener('resize', scaleCanvas);
     };
   }, [currencyImage]);
 
@@ -41,7 +65,6 @@ export function CurrencyEditor({ currencyImage, onClose }) {
     const reader = new FileReader();
     reader.onload = (event) => {
       fabric.fabric.Image.fromURL(event.target.result, (img) => {
-        // Create oval clip path
         const clipPath = new fabric.fabric.Ellipse({
           rx: 100,
           ry: 120,
@@ -69,15 +92,27 @@ export function CurrencyEditor({ currencyImage, onClose }) {
     const objects = canvas.getObjects();
     const existingText = objects.find(obj => obj.type === 'text' && obj.textType === type);
     
+    const position = textPositions[type];
+    const fontFamily = type === 'celebration' ? 'Playfair Display' : 
+                      type === 'currency' ? 'Montserrat' : 'Montserrat';
+    const fontSize = type === 'celebration' ? 40 : 24;
+    
     if (existingText) {
-      existingText.set('text', value);
+      existingText.set({
+        text: value,
+        fill: '#000000', // Black text color
+        left: position.x,
+        top: position.y,
+        fontFamily: fontFamily,
+        fontSize: fontSize
+      });
     } else {
       const textObject = new fabric.fabric.Text(value, {
-        left: type === 'celebration' ? 400 : type === 'currency' ? 200 : 600,
-        top: type === 'celebration' ? 200 : type === 'currency' ? 300 : 350,
-        fontFamily: type === 'celebration' ? 'Playfair Display' : 'Montserrat',
-        fontSize: type === 'celebration' ? 40 : 24,
-        fill: '#334495',
+        left: position.x,
+        top: position.y,
+        fontFamily: fontFamily,
+        fontSize: fontSize,
+        fill: '#000000', // Black text color
         originX: 'center',
         originY: 'center',
         textType: type
@@ -101,74 +136,89 @@ export function CurrencyEditor({ currencyImage, onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white p-6 rounded-lg max-w-4xl w-full mx-4">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold">Customize Currency</h2>
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
-            <X className="h-6 w-6" />
-          </button>
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <canvas ref={canvasRef} className="border border-gray-200 rounded-lg" />
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto">
+      <div className="bg-white rounded-lg w-full max-w-4xl">
+        <div className="p-6">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-2xl font-bold text-left">Customize Currency</h2>
+            <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
+              <X className="h-6 w-6" />
+            </button>
           </div>
           
-          <div className="space-y-6">
-            <div>
-              <Label htmlFor="celebration">Celebration Text</Label>
-              <Input
-                id="celebration"
-                value={celebrationText}
-                onChange={(e) => {
-                  setCelebrationText(e.target.value);
-                  updateText('celebration', e.target.value);
-                }}
-                className="mt-1"
-              />
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="canvas-container w-full overflow-hidden border border-gray-200 rounded-lg">
+              <canvas ref={canvasRef} />
             </div>
             
-            <div>
-              <Label htmlFor="currency">Currency Name</Label>
-              <Input
-                id="currency"
-                value={currencyName}
-                onChange={(e) => {
-                  setCurrencyName(e.target.value);
-                  updateText('currency', e.target.value);
-                }}
-                className="mt-1"
-              />
-            </div>
-            
-            <div>
-              <Label htmlFor="eventId">Event ID*</Label>
-              <Input
-                id="eventId"
-                value={eventId}
-                onChange={(e) => {
-                  setEventId(e.target.value);
-                  updateText('eventId', e.target.value);
-                }}
-                className="mt-1"
-              />
-            </div>
+            <div className="space-y-6">
+              <div className="text-left">
+                <Label htmlFor="celebration" className="block mb-2">
+                  Celebration Text
+                </Label>
+                <Input
+                  id="celebration"
+                  value={celebrationText}
+                  onChange={(e) => {
+                    setCelebrationText(e.target.value);
+                    updateText('celebration', e.target.value);
+                  }}
+                />
+                <p className="text-sm text-gray-500 mt-1">
+                  Position: Top center (x: {textPositions.celebration.x}, y: {textPositions.celebration.y})
+                </p>
+              </div>
+              
+              <div className="text-left">
+                <Label htmlFor="currency" className="block mb-2">
+                  Currency Name
+                </Label>
+                <Input
+                  id="currency"
+                  value={currencyName}
+                  onChange={(e) => {
+                    setCurrencyName(e.target.value);
+                    updateText('currency', e.target.value);
+                  }}
+                />
+                <p className="text-sm text-gray-500 mt-1">
+                  Position: Bottom center (x: {textPositions.currency.x}, y: {textPositions.currency.y})
+                </p>
+              </div>
+              
+              <div className="text-left">
+                <Label htmlFor="eventId" className="block mb-2">
+                  Event ID*
+                </Label>
+                <Input
+                  id="eventId"
+                  value={eventId}
+                  onChange={(e) => {
+                    setEventId(e.target.value);
+                    updateText('eventId', e.target.value);
+                  }}
+                />
+                <p className="text-sm text-gray-500 mt-1">
+                  Position: Bottom right (x: {textPositions.eventId.x}, y: {textPositions.eventId.y})
+                </p>
+              </div>
 
-            <div>
-              <Label htmlFor="image">Upload Portrait Image</Label>
-              <Input
-                id="image"
-                type="file"
-                accept="image/*"
-                onChange={handleImageUpload}
-                className="mt-1"
-              />
+              <div className="text-left">
+                <Label htmlFor="image" className="block mb-2">
+                  Upload Portrait Image
+                </Label>
+                <Input
+                  id="image"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                />
+              </div>
+              
+              <Button onClick={handleSave} className="w-full bg-green-500 hover:bg-green-600 text-white">
+                Save Changes
+              </Button>
             </div>
-            
-            <Button onClick={handleSave} className="w-full bg-green-500 hover:bg-green-600 text-white">
-              Save Changes
-            </Button>
           </div>
         </div>
       </div>
