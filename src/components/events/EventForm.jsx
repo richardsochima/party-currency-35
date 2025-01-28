@@ -11,8 +11,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-export function EventForm({ formData, handleInputChange, handleSubmit, isSubmitting }) {
-  const [showReconciliationInfo, setShowReconciliationInfo] = useState(false); // State to toggle explanation
+// Changed to named export
+export const EventForm = ({ formData, handleInputChange, handleSubmit, isSubmitting }) => {
+  const [showReconciliationInfo, setShowReconciliationInfo] = useState(false);
 
   const eventTypes = [
     "Birthday",
@@ -182,4 +183,4 @@ export function EventForm({ formData, handleInputChange, handleSubmit, isSubmitt
       </Button>
     </form>
   );
-}
+};
