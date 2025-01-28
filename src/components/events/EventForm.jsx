@@ -118,20 +118,35 @@ export function EventForm({ formData, handleInputChange, handleSubmit, isSubmitt
         />
       </div>
 
-      <div className="flex items-center space-x-2">
-        <input
-          type="checkbox"
-          id="reconciliation_service"
-          name="reconciliation_service"
-          checked={formData.reconciliation_service}
-          onChange={handleInputChange}
-          className="w-4 h-4 text-blue-600"
-        />
-        <label htmlFor="reconciliation_service" className="text-sm font-medium text-left">
-          Enable Reconciliation Service
-        </label>
+      {/* Reconciliation Service Section */}
+      <div className="space-y-4">
+        {/* Explanation for Reconciliation Service */}
+        <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+          <p className="text-sm text-gray-600">
+            Party currency reconciliation service streamlines event management by providing foot 
+            soldiers to assist with currency transfers, a kiosk operator to convert party currency to 
+            real cash for guest artists, and an event wallet for hosts to monitor balances and transactions 
+            effortlessly, ensuring a stress-free experience with no risk of theft or fraud.
+          </p>
+        </div>
+
+        {/* Reconciliation Service Checkbox */}
+        <div className="flex items-center space-x-2">
+          <input
+            type="checkbox"
+            id="reconciliation_service"
+            name="reconciliation_service"
+            checked={formData.reconciliation_service}
+            onChange={handleInputChange}
+            className="w-4 h-4 text-blue-600"
+          />
+          <label htmlFor="reconciliation_service" className="text-sm font-medium text-left">
+            Enable Reconciliation Service
+          </label>
+        </div>
       </div>
 
+      {/* Submit Button */}
       <Button
         type="submit"
         className="w-full md:w-auto px-8 bg-gold hover:bg-gold/90 text-white"
