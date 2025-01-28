@@ -1,188 +1,185 @@
-import React, { useContext, useState } from "react";
-import { Button } from "@/components/ui/button";
+import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Link, useNavigate } from "react-router-dom";
-import { Eye, EyeOff } from "lucide-react";
-import { getProfileApi, loginCustomerApi } from "@/services/apiAuth";
-import { storeAuth } from "@/lib/util";
-import { USER_PROFILE_CONTEXT, SIGNUP_CONTEXT } from "@/context";
+import { Button } from "@/components/ui/button";
+import { Loader, ChevronDown, ChevronUp } from "lucide-react";
+import { LocationSelect } from "./LocationSelect";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
-export default function LoginPage() {
-  const { setSignupOpen } = useContext(SIGNUP_CONTEXT); // Handles opening the signup modal
-  const { setUserProfile } = useContext(USER_PROFILE_CONTEXT); // Updates user profile context
-  const [email, setEmail] = useState(""); // State for email input
-  const [password, setPassword] = useState(""); // State for password input
-  const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
-  const [errorMessage, setErrorMessage] = useState(""); // State for error messages
-  const [loading, setLoading] = useState(false); // State for loading indicator
-  const navigate = useNavigate(); // React Router navigation hook
+export function EventForm({ formData, handleInputChange, handleSubmit, isSubmitting }) {
+  const [showReconciliationInfo, setShowReconciliationInfo] = useState(false); // State to toggle explanation
 
-  const handleLogin = async (e) => {
-    e.preventDefault(); // Prevent page reload
-    setLoading(true);
-    setErrorMessage("");
+  const eventTypes = [
+    "Birthday",
+    "Wedding",
+    "Anniversary",
+    "Corporate Event",
+    "Burial",
+    "Other",
+  ];
 
-    try {
-      const response = await loginCustomerApi(email, password);
-
-      const data = await response.json();
-
-      if (response.ok) {
-        console.log("Login successful:", data);
-        const accessToken = data.token; // Get the token from API response
-        // Store token in cookies and user type in local storage
-        storeAuth(accessToken, "customer", true);
-
-        // Fetch user profile using the access token
-        const userProfileResponse = await getProfileApi();
-        if (userProfileResponse.ok) {
-          const userProfileData = await userProfileResponse.json();
-          setUserProfile(userProfileData); // Update user profile context
-          console.log("User profile fetched:", userProfileData);
-          navigate("/"); // Redirect to dashboard
-        } else {
-          throw new Error("Failed to fetch user profile.");
-        }
-      } else {
-        setErrorMessage(data.message || "Invalid email or password.");
-      }
-    } catch (error) {
-      console.error("Login error:", error);
-      setErrorMessage("An error occurred. Please try again later.");
-    } finally {
-      setLoading(false); // Reset loading state
-    }
+  const handleEventTypeChange = (value) => {
+    handleInputChange({
+      target: {
+        name: "event_type",
+        value,
+      },
+    });
   };
 
   return (
-    <div className="flex flex-col justify-center items-center p-4 min-h-screen">
-      {/* Back Button */}
-      <div className="absolute top-4 left-4 md:left-8">
-        <button
-          onClick={() => navigate("/")}
-          className="flex items-center text-gray-600 hover:text-black transition"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth="1.5"
-            stroke="currentColor"
-            className="w-6 h-6"
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-left block">Event Name</label>
+          <Input
+            required
+            name="event_name"
+            value={formData.event_name}
+            onChange={handleInputChange}
+            minLength={3}
+            maxLength={100}
+            placeholder="Enter event name"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-left block">Event Type</label>
+          <Select
+            value={formData.event_type}
+            onValueChange={handleEventTypeChange}
+            required
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M15.75 19.5L8.25 12l7.5-7.5"
-            />
-          </svg>
-          <span className="ml-2 text-sm md:text-base">Back</span>
-        </button>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Select event type" />
+            </SelectTrigger>
+            <SelectContent>
+              {eventTypes.map((type) => (
+                <SelectItem key={type} value={type.toLowerCase()}>
+                  {type}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-left block">Start Date</label>
+          <Input
+            required
+            type="date"
+            name="start_date"
+            value={formData.start_date}
+            onChange={handleInputChange}
+            min={new Date().toISOString().split("T")[0]}
+          />
+        </div>
+
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-left block">End Date</label>
+          <Input
+            required
+            type="date"
+            name="end_date"
+            value={formData.end_date}
+            onChange={handleInputChange}
+            min={formData.start_date || new Date().toISOString().split("T")[0]}
+          />
+        </div>
+
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-left block">Street Address</label>
+          <Input
+            required
+            name="street_address"
+            value={formData.street_address}
+            onChange={handleInputChange}
+            placeholder="Enter street address"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-left block">Post Code</label>
+          <Input
+            required
+            name="post_code"
+            value={formData.post_code}
+            onChange={handleInputChange}
+            placeholder="Enter post code"
+          />
+        </div>
+
+        <LocationSelect
+          formData={formData}
+          handleInputChange={handleInputChange}
+        />
       </div>
 
-      <div className="space-y-8 w-full max-w-md">
-        <div className="flex flex-col items-center">
-          <img
-            src="/logo.svg"
-            alt="Party Currency Logo"
-            width={60}
-            height={60}
-            className="mb-6"
-          />
-          <h1 className="font-playfair text-3xl">Welcome back!</h1>
-        </div>
-
-        <form className="space-y-6" onSubmit={handleLogin}>
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="example@gmail.com"
-              className="border-lightgray"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+      {/* Reconciliation Service Section */}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          {/* Reconciliation Service Toggle */}
+          <div className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              id="reconciliation_service"
+              name="reconciliation_service"
+              checked={formData.reconciliation_service}
+              onChange={handleInputChange}
+              className="w-4 h-4 text-blue-600"
             />
+            <label htmlFor="reconciliation_service" className="text-sm font-medium text-left">
+              Enable Reconciliation Service
+            </label>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
-            <div className="relative">
-              <Input
-                id="password"
-                type={showPassword ? "text" : "password"}
-                className="border-lightgray"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
-              >
-                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-              </button>
-            </div>
-          </div>
-
-          {errorMessage && (
-            <p className="text-red-500 text-sm">{errorMessage}</p>
-          )}
-
-          <Button
-            type="submit"
-            className="bg-[#1A1A1A] hover:bg-[#2D2D2D] w-full"
-            disabled={loading}
+          {/* Toggle Info Button */}
+          <button
+            type="button"
+            onClick={() => setShowReconciliationInfo(!showReconciliationInfo)}
+            className="text-sm text-blue-600 hover:underline flex items-center space-x-1"
           >
-            {loading ? "Signing in..." : "Sign in"}
-          </Button>
-        </form>
-
-        {/* Alternative Login Options */}
-        <div className="space-y-4">
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <div className="border-t border-lightgray w-full"></div>
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="bg-white px-2 text-muted-foreground">
-                Or continue with
-              </span>
-            </div>
-          </div>
-
-          <div className="gap-4 grid grid-cols-2">
-            <Button variant="outline" className="border-lightgray">
-              <img src="/google.svg" alt="Google" className="mr-2 w-5 h-5" />
-              Google
-            </Button>
-            <Button variant="outline" className="border-lightgray">
-              <img src="/apple.svg" alt="Apple" className="mr-2 w-5 h-5" />
-              Apple
-            </Button>
-          </div>
+            <span>{showReconciliationInfo ? "Hide Info" : "What is this?"}</span>
+            {showReconciliationInfo ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+          </button>
         </div>
 
-        {/* Sign-up and Forgot Password Links */}
-        <div className="space-y-2 text-center">
-          <Link
-            to="/forgot-password"
-            className="text-muted-foreground text-sm hover:underline"
+        {/* Reconciliation Info */}
+        {showReconciliationInfo && (
+          <div
+            className="bg-gray-50 p-4 rounded-lg border border-gray-200 transition-all duration-500 ease-in-out"
           >
-            Forgotten password?
-          </Link>
-          <div className="text-sm">
-            New to Party Currency?{" "}
-            <p
-              onClick={() => setSignupOpen(true)} // Open signup modal
-              className="text-gold hover:underline cursor-pointer"
-            >
-              Sign up
+            <p className="text-sm text-gray-600 text-left">
+              Party currency reconciliation service streamlines event management by providing
+              foot soldiers to assist with currency transfers, a kiosk operator to convert party
+              currency to real cash for guest artists, and an event wallet for hosts to monitor
+              balances and transactions effortlessly, ensuring a stress-free experience with no
+              risk of theft or fraud.
             </p>
           </div>
-        </div>
+        )}
       </div>
-    </div>
+
+      {/* Submit Button */}
+      <Button
+        type="submit"
+        className="w-full md:w-auto px-8 bg-gold hover:bg-gold/90 text-white"
+        disabled={isSubmitting}
+      >
+        {isSubmitting ? (
+          <>
+            <Loader className="mr-2 h-4 w-4 animate-spin" />
+            Creating Event...
+          </>
+        ) : (
+          "Create Event"
+        )}
+      </Button>
+    </form>
   );
 }
