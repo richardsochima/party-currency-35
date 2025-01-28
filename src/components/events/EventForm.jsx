@@ -11,9 +11,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-// Changed to named export
 export const EventForm = ({ formData, handleInputChange, handleSubmit, isSubmitting }) => {
   const [showReconciliationInfo, setShowReconciliationInfo] = useState(false);
+  const [customEventType, setCustomEventType] = useState("");
 
   const eventTypes = [
     "Birthday",
@@ -29,6 +29,21 @@ export const EventForm = ({ formData, handleInputChange, handleSubmit, isSubmitt
       target: {
         name: "event_type",
         value,
+      },
+    });
+
+    // Reset custom event type if not "Other"
+    if (value !== "other") {
+      setCustomEventType("");
+    }
+  };
+
+  const handleCustomEventTypeChange = (e) => {
+    setCustomEventType(e.target.value);
+    handleInputChange({
+      target: {
+        name: "event_type",
+        value: e.target.value,
       },
     });
   };
@@ -67,6 +82,21 @@ export const EventForm = ({ formData, handleInputChange, handleSubmit, isSubmitt
               ))}
             </SelectContent>
           </Select>
+
+          {formData.event_type === "other" && (
+            <div className="mt-2">
+              <label className="text-sm font-medium text-left block">
+                Specify Event Type
+              </label>
+              <Input
+                required
+                name="custom_event_type"
+                value={customEventType}
+                onChange={handleCustomEventTypeChange}
+                placeholder="Enter custom event type"
+              />
+            </div>
+          )}
         </div>
 
         <div className="space-y-2">
