@@ -19,27 +19,21 @@ export function EventBasicInfo({ formData, handleInputChange, customEventType, s
   ];
 
   const handleEventTypeChange = (value) => {
-    if (value === "other") {
-      setCustomEventType(formData.event_type !== "other" ? "" : formData.event_type);
-    }
-    
     handleInputChange({
       target: {
         name: "event_type",
-        value: value,
+        value: value.toLowerCase(),
       },
     });
+
+    if (value.toLowerCase() !== "other") {
+      setCustomEventType("");
+    }
   };
 
   const handleCustomEventTypeChange = (e) => {
     const value = e.target.value;
     setCustomEventType(value);
-    handleInputChange({
-      target: {
-        name: "event_type",
-        value: value,
-      },
-    });
   };
 
   return (
@@ -60,7 +54,7 @@ export function EventBasicInfo({ formData, handleInputChange, customEventType, s
       <div className="space-y-2">
         <label className="text-sm font-medium text-left block">Event Type</label>
         <Select
-          value={formData.event_type === "other" ? "other" : formData.event_type}
+          value={formData.event_type}
           onValueChange={handleEventTypeChange}
           required
         >

@@ -10,8 +10,17 @@ export const EventForm = ({ formData, handleInputChange, handleSubmit, isSubmitt
   const [showReconciliationInfo, setShowReconciliationInfo] = useState(false);
   const [customEventType, setCustomEventType] = useState("");
 
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    const finalFormData = {
+      ...formData,
+      event_type: formData.event_type === "other" ? customEventType : formData.event_type,
+    };
+    handleSubmit(e, finalFormData);
+  };
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleFormSubmit} className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <EventBasicInfo
           formData={formData}
