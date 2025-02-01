@@ -13,7 +13,6 @@ import {
 
 export const EventForm = ({ formData, handleInputChange, handleSubmit, isSubmitting }) => {
   const [showReconciliationInfo, setShowReconciliationInfo] = useState(false);
-  const [customEventType, setCustomEventType] = useState("");
 
   const eventTypes = [
     "Birthday",
@@ -28,18 +27,12 @@ export const EventForm = ({ formData, handleInputChange, handleSubmit, isSubmitt
     handleInputChange({
       target: {
         name: "event_type",
-        value,
+        value: value.toLowerCase(),
       },
     });
-
-    // Reset custom event type if not "Other"
-    if (value !== "other") {
-      setCustomEventType("");
-    }
   };
 
   const handleCustomEventTypeChange = (e) => {
-    setCustomEventType(e.target.value);
     handleInputChange({
       target: {
         name: "event_type",
@@ -76,7 +69,7 @@ export const EventForm = ({ formData, handleInputChange, handleSubmit, isSubmitt
             </SelectTrigger>
             <SelectContent>
               {eventTypes.map((type) => (
-                <SelectItem key={type} value={type.toLowerCase()}>
+                <SelectItem key={type.toLowerCase()} value={type.toLowerCase()}>
                   {type}
                 </SelectItem>
               ))}
@@ -85,15 +78,13 @@ export const EventForm = ({ formData, handleInputChange, handleSubmit, isSubmitt
 
           {formData.event_type === "other" && (
             <div className="mt-2">
-              <label className="text-sm font-medium text-left block">
-                Specify Event Type
-              </label>
               <Input
                 required
                 name="custom_event_type"
-                value={customEventType}
+                value={formData.event_type === "other" ? "" : formData.event_type}
                 onChange={handleCustomEventTypeChange}
                 placeholder="Enter custom event type"
+                className="mt-2"
               />
             </div>
           )}
@@ -149,12 +140,12 @@ export const EventForm = ({ formData, handleInputChange, handleSubmit, isSubmitt
           formData={formData}
           handleInputChange={handleInputChange}
         />
+
       </div>
 
       {/* Reconciliation Service Section */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          {/* Reconciliation Service Toggle */}
           <div className="flex items-center space-x-2">
             <input
               type="checkbox"
@@ -169,7 +160,6 @@ export const EventForm = ({ formData, handleInputChange, handleSubmit, isSubmitt
             </label>
           </div>
 
-          {/* Toggle Info Button */}
           <button
             type="button"
             onClick={() => setShowReconciliationInfo(!showReconciliationInfo)}
@@ -180,11 +170,8 @@ export const EventForm = ({ formData, handleInputChange, handleSubmit, isSubmitt
           </button>
         </div>
 
-        {/* Reconciliation Info */}
         {showReconciliationInfo && (
-          <div
-            className="bg-gray-50 p-4 rounded-lg border border-gray-200 transition-all duration-500 ease-in-out"
-          >
+          <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 transition-all duration-500 ease-in-out">
             <p className="text-sm text-gray-600 text-left">
               Party currency reconciliation service streamlines event management by providing
               foot soldiers to assist with currency transfers, a kiosk operator to convert party
@@ -196,7 +183,6 @@ export const EventForm = ({ formData, handleInputChange, handleSubmit, isSubmitt
         )}
       </div>
 
-      {/* Submit Button */}
       <Button
         type="submit"
         className="w-full md:w-auto px-8 bg-gold hover:bg-gold/90 text-white"

@@ -41,24 +41,17 @@ export default function CreateEvent() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
     setIsSubmitting(true);
+
     try {
       const { accessToken } = getAuth();
-      
-      const requestData = {
-        ...formData,
-        LGA: formData.lga.toUpperCase(),
-        reconciliation_service: Boolean(formData.reconciliation_service),
-      };
-
       const response = await fetch(`${BASE_URL}/events/create`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Token ${accessToken}`,
         },
-        body: JSON.stringify(requestData),
+        body: JSON.stringify(formData),
       });
 
       const data = await response.json();
