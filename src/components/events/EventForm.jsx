@@ -207,3 +207,4 @@ export const EventForm = ({ formData, handleInputChange, handleSubmit, isSubmitt
       </Button>
     </form>
   );
+};
