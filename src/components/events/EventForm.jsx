@@ -13,6 +13,7 @@ import {
 
 export const EventForm = ({ formData, handleInputChange, handleSubmit, isSubmitting }) => {
   const [showReconciliationInfo, setShowReconciliationInfo] = useState(false);
+  const [customEventType, setCustomEventType] = useState("");
 
   const eventTypes = [
     "Birthday",
@@ -24,19 +25,26 @@ export const EventForm = ({ formData, handleInputChange, handleSubmit, isSubmitt
   ];
 
   const handleEventTypeChange = (value) => {
+    if (value === "other") {
+      // When switching to "other", preserve any existing custom type
+      setCustomEventType(formData.event_type !== "other" ? "" : formData.event_type);
+    }
+    
     handleInputChange({
       target: {
         name: "event_type",
-        value: value.toLowerCase(),
+        value: value,
       },
     });
   };
 
   const handleCustomEventTypeChange = (e) => {
+    const value = e.target.value;
+    setCustomEventType(value);
     handleInputChange({
       target: {
         name: "event_type",
-        value: e.target.value,
+        value: value,
       },
     });
   };
@@ -60,7 +68,7 @@ export const EventForm = ({ formData, handleInputChange, handleSubmit, isSubmitt
         <div className="space-y-2">
           <label className="text-sm font-medium text-left block">Event Type</label>
           <Select
-            value={formData.event_type}
+            value={formData.event_type === "other" ? "other" : formData.event_type}
             onValueChange={handleEventTypeChange}
             required
           >
@@ -81,7 +89,7 @@ export const EventForm = ({ formData, handleInputChange, handleSubmit, isSubmitt
               <Input
                 required
                 name="custom_event_type"
-                value={formData.event_type === "other" ? "" : formData.event_type}
+                value={customEventType}
                 onChange={handleCustomEventTypeChange}
                 placeholder="Enter custom event type"
                 className="mt-2"
@@ -199,4 +207,3 @@ export const EventForm = ({ formData, handleInputChange, handleSubmit, isSubmitt
       </Button>
     </form>
   );
-};

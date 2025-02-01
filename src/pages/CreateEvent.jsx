@@ -45,13 +45,21 @@ export default function CreateEvent() {
 
     try {
       const { accessToken } = getAuth();
+      
+      // Transform the data for the API
+      const requestData = {
+        ...formData,
+        lga: formData.lga.toUpperCase(),
+        reconciliation_service: Boolean(formData.reconciliation_service),
+      };
+
       const response = await fetch(`${BASE_URL}/events/create`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Token ${accessToken}`,
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(requestData),
       });
 
       const data = await response.json();
