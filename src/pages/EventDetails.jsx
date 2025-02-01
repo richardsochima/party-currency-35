@@ -89,6 +89,5 @@ export default function EventDetails() {
         </div>
       </div>
     </div>
-  </div>
   );
 }
