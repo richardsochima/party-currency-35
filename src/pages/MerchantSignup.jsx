@@ -68,35 +68,68 @@ export default function MerchantSignup() {
         navigate("/merchant/transactions");
       } else {
         const errorData = formatErrorMessage(data);
+        console.log("API Error response:", errorData);
         
-        // Handle specific API errors by setting them on the appropriate form fields
+        // Handle email-specific errors, whether they're in email field or detail field
         if (errorData.email) {
-          form.setError("email", { type: "manual", message: Array.isArray(errorData.email) ? errorData.email[0] : errorData.email });
+          form.setError("email", { 
+            type: "manual", 
+            message: Array.isArray(errorData.email) ? errorData.email[0] : errorData.email 
+          });
+        } else if (errorData.detail && errorData.detail.toLowerCase().includes("email")) {
+          form.setError("email", { 
+            type: "manual", 
+            message: errorData.detail 
+          });
         }
+        
+        // Handle other field-specific errors
         if (errorData.phone_number) {
-          form.setError("phoneNumber", { type: "manual", message: Array.isArray(errorData.phone_number) ? errorData.phone_number[0] : errorData.phone_number });
+          form.setError("phoneNumber", { 
+            type: "manual", 
+            message: Array.isArray(errorData.phone_number) ? errorData.phone_number[0] : errorData.phone_number 
+          });
         }
         if (errorData.password) {
-          form.setError("password", { type: "manual", message: Array.isArray(errorData.password) ? errorData.password[0] : errorData.password });
+          form.setError("password", { 
+            type: "manual", 
+            message: Array.isArray(errorData.password) ? errorData.password[0] : errorData.password 
+          });
         }
         if (errorData.first_name) {
-          form.setError("firstName", { type: "manual", message: Array.isArray(errorData.first_name) ? errorData.first_name[0] : errorData.first_name });
+          form.setError("firstName", { 
+            type: "manual", 
+            message: Array.isArray(errorData.first_name) ? errorData.first_name[0] : errorData.first_name 
+          });
         }
         if (errorData.last_name) {
-          form.setError("lastName", { type: "manual", message: Array.isArray(errorData.last_name) ? errorData.last_name[0] : errorData.last_name });
+          form.setError("lastName", { 
+            type: "manual", 
+            message: Array.isArray(errorData.last_name) ? errorData.last_name[0] : errorData.last_name 
+          });
         }
         if (errorData.business_type) {
-          form.setError("businessType", { type: "manual", message: Array.isArray(errorData.business_type) ? errorData.business_type[0] : errorData.business_type });
+          form.setError("businessType", { 
+            type: "manual", 
+            message: Array.isArray(errorData.business_type) ? errorData.business_type[0] : errorData.business_type 
+          });
         }
         if (errorData.state) {
-          form.setError("state", { type: "manual", message: Array.isArray(errorData.state) ? errorData.state[0] : errorData.state });
+          form.setError("state", { 
+            type: "manual", 
+            message: Array.isArray(errorData.state) ? errorData.state[0] : errorData.state 
+          });
         }
         if (errorData.city) {
-          form.setError("city", { type: "manual", message: Array.isArray(errorData.city) ? errorData.city[0] : errorData.city });
+          form.setError("city", { 
+            type: "manual", 
+            message: Array.isArray(errorData.city) ? errorData.city[0] : errorData.city 
+          });
         }
         
-        // For general errors, show a toast
-        if (errorData.message && !Object.keys(form.formState.errors).length) {
+        // Show generic toast error only if we couldn't map any specific field errors
+        const hasSetFieldErrors = Object.keys(form.formState.errors).length > 0;
+        if (!hasSetFieldErrors && errorData.message) {
           toast.error(typeof errorData.message === 'string' ? errorData.message : "Signup failed. Please check your information and try again.");
         }
       }
