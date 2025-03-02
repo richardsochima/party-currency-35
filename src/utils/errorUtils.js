@@ -1,3 +1,4 @@
+
 export const formatErrorMessage = (error) => {
   if (!error) return "";
   
@@ -22,8 +23,8 @@ export const formatErrorMessage = (error) => {
         }
       });
       
-      // Join all messages with line breaks
-      return messages.join("\n");
+      // Join all messages with a space instead of line breaks
+      return messages.join(" ");
     }
     
     return "An error occurred";

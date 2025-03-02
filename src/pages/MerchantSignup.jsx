@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -20,6 +21,14 @@ import { getProfileApi, signupMerchantApi } from "@/api/authApi";
 import { storeAuth } from "@/lib/util";
 import { LoadingDisplay } from "@/components/LoadingDisplay";
 import { formatErrorMessage } from "../utils/errorUtils";
+import { toast } from "react-hot-toast";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 
 export default function MerchantSignup() {
   const [showPassword, setShowPassword] = useState(false);

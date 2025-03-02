@@ -1,3 +1,4 @@
+
 import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -13,6 +14,7 @@ import { storeAuth } from "@/lib/util";
 import { USER_PROFILE_CONTEXT } from "@/context";
 import { formatErrorMessage } from "@/utils/errorUtils";
 import { LoadingDisplay } from "@/components/LoadingDisplay";
+import { toast } from "react-hot-toast";
 
 const formSchema = z
   .object({
@@ -32,7 +34,6 @@ export default function CelebrantSignupPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
   const { setUserProfile } = useContext(USER_PROFILE_CONTEXT);
   const navigate = useNavigate();
 
@@ -50,7 +51,6 @@ export default function CelebrantSignupPage() {
 
   const onSubmit = async (values) => {
     setLoading(true);
-    setErrorMessage("");
 
     try {
       const response = await signupCelebrantApi(
@@ -69,10 +69,23 @@ export default function CelebrantSignupPage() {
         setUserProfile(data.user);
         navigate("/dashboard");
       } else {
-        setErrorMessage(formatErrorMessage(data.message) || "Signup failed. Please check your information and try again.");
+        const errorMessage = formatErrorMessage(data.message);
+        
+        // Handle specific API errors by setting them on the appropriate form fields
+        if (data.email) {
+          form.setError("email", { type: "manual", message: data.email });
+        }
+        if (data.phone_number) {
+          form.setError("phone", { type: "manual", message: data.phone_number });
+        }
+        
+        // For other errors, show a toast
+        if (errorMessage && !data.email && !data.phone_number) {
+          toast.error(errorMessage);
+        }
       }
     } catch (error) {
-      setErrorMessage("Network error occurred. Please check your connection and try again.");
+      toast.error("Network error occurred. Please check your connection and try again.");
       console.error("Signup error:", error);
     } finally {
       setLoading(false);
@@ -92,12 +105,6 @@ export default function CelebrantSignupPage() {
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          {errorMessage && (
-            <div className="bg-red-50 border border-red-200 p-4 rounded-md text-red-600 text-sm">
-              {errorMessage}
-            </div>
-          )}
-
           <div className="gap-4 grid grid-cols-2">
             <FormInput
               label="First Name"
