@@ -8,8 +8,9 @@ import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { AuthFormWrapper } from "@/components/forms/AuthFormWrapper";
 import { FormInput } from "@/components/forms/FormInput";
+import { PhoneInput } from "@/components/forms/PhoneInput";
 import { SocialAuthButtons } from "@/components/forms/SocialAuthButtons";
-import { signupCelebrantApi, getProfileApi } from "@/api/authApi";
+import { signupCelebrantApi } from "@/api/authApi";
 import { storeAuth } from "@/lib/util";
 import { USER_PROFILE_CONTEXT } from "@/context";
 import { formatErrorMessage } from "@/utils/errorUtils";
@@ -23,7 +24,7 @@ const formSchema = z
     email: z.string().email("Invalid email address"),
     password: z.string().min(8, "Password must be at least 8 characters"),
     confirmPassword: z.string(),
-    phone: z.string().min(10, "Invalid phone number"),
+    phone: z.string().startsWith("+234", "Phone number must start with +234").min(13, "Invalid phone number"),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match",
@@ -45,7 +46,7 @@ export default function CelebrantSignupPage() {
       email: "",
       password: "",
       confirmPassword: "",
-      phone: "",
+      phone: "+234",
     },
   });
 
@@ -69,19 +70,28 @@ export default function CelebrantSignupPage() {
         setUserProfile(data.user);
         navigate("/dashboard");
       } else {
-        const errorMessage = formatErrorMessage(data.message);
+        const errorData = formatErrorMessage(data);
         
         // Handle specific API errors by setting them on the appropriate form fields
-        if (data.email) {
-          form.setError("email", { type: "manual", message: data.email });
+        if (errorData.email) {
+          form.setError("email", { type: "manual", message: Array.isArray(errorData.email) ? errorData.email[0] : errorData.email });
         }
-        if (data.phone_number) {
-          form.setError("phone", { type: "manual", message: data.phone_number });
+        if (errorData.phone_number) {
+          form.setError("phone", { type: "manual", message: Array.isArray(errorData.phone_number) ? errorData.phone_number[0] : errorData.phone_number });
+        }
+        if (errorData.password) {
+          form.setError("password", { type: "manual", message: Array.isArray(errorData.password) ? errorData.password[0] : errorData.password });
+        }
+        if (errorData.first_name) {
+          form.setError("firstName", { type: "manual", message: Array.isArray(errorData.first_name) ? errorData.first_name[0] : errorData.first_name });
+        }
+        if (errorData.last_name) {
+          form.setError("lastName", { type: "manual", message: Array.isArray(errorData.last_name) ? errorData.last_name[0] : errorData.last_name });
         }
         
-        // For other errors, show a toast
-        if (errorMessage && !data.email && !data.phone_number) {
-          toast.error(errorMessage);
+        // For general errors, show a toast
+        if (errorData.message && !errorData.email && !errorData.phone_number && !errorData.password && !errorData.first_name && !errorData.last_name) {
+          toast.error(typeof errorData.message === 'string' ? errorData.message : "Signup failed. Please check your information and try again.");
         }
       }
     } catch (error) {
@@ -155,13 +165,11 @@ export default function CelebrantSignupPage() {
             labelClassName="text-left"
           />
 
-          <FormInput
+          <PhoneInput
             label="Phone number"
             name="phone"
-            type="tel"
-            placeholder="+234..."
+            placeholder="8012345678"
             control={form.control}
-            labelClassName="text-left"
           />
 
           <Button

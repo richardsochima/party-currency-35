@@ -1,10 +1,10 @@
+
 import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -14,10 +14,11 @@ import {
 } from "@/components/ui/select";
 import { AuthFormWrapper } from "@/components/forms/AuthFormWrapper";
 import { FormInput } from "@/components/forms/FormInput";
+import { PhoneInput } from "@/components/forms/PhoneInput";
 import { SocialAuthButtons } from "@/components/forms/SocialAuthButtons";
 import { merchantSignupSchema } from "@/lib/validations/auth";
 import { USER_PROFILE_CONTEXT } from "@/context";
-import { getProfileApi, signupMerchantApi } from "@/api/authApi";
+import { signupMerchantApi } from "@/api/authApi";
 import { storeAuth } from "@/lib/util";
 import { LoadingDisplay } from "@/components/LoadingDisplay";
 import { formatErrorMessage } from "../utils/errorUtils";
@@ -35,7 +36,6 @@ export default function MerchantSignup() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const { setUserProfile } = useContext(USER_PROFILE_CONTEXT);
-  const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
   const form = useForm({
@@ -50,13 +50,12 @@ export default function MerchantSignup() {
       country: "Nigeria",
       state: "",
       city: "",
-      phoneNumber: "",
+      phoneNumber: "+234",
     },
   });
 
   async function onSubmit(values) {
     setLoading(true);
-    setErrorMessage("");
 
     try {
       const response = await signupMerchantApi(values);
@@ -68,10 +67,41 @@ export default function MerchantSignup() {
         setUserProfile(data.user);
         navigate("/merchant/transactions");
       } else {
-        setErrorMessage(formatErrorMessage(data.message) || "Signup failed. Please check your information and try again.");
+        const errorData = formatErrorMessage(data);
+        
+        // Handle specific API errors by setting them on the appropriate form fields
+        if (errorData.email) {
+          form.setError("email", { type: "manual", message: Array.isArray(errorData.email) ? errorData.email[0] : errorData.email });
+        }
+        if (errorData.phone_number) {
+          form.setError("phoneNumber", { type: "manual", message: Array.isArray(errorData.phone_number) ? errorData.phone_number[0] : errorData.phone_number });
+        }
+        if (errorData.password) {
+          form.setError("password", { type: "manual", message: Array.isArray(errorData.password) ? errorData.password[0] : errorData.password });
+        }
+        if (errorData.first_name) {
+          form.setError("firstName", { type: "manual", message: Array.isArray(errorData.first_name) ? errorData.first_name[0] : errorData.first_name });
+        }
+        if (errorData.last_name) {
+          form.setError("lastName", { type: "manual", message: Array.isArray(errorData.last_name) ? errorData.last_name[0] : errorData.last_name });
+        }
+        if (errorData.business_type) {
+          form.setError("businessType", { type: "manual", message: Array.isArray(errorData.business_type) ? errorData.business_type[0] : errorData.business_type });
+        }
+        if (errorData.state) {
+          form.setError("state", { type: "manual", message: Array.isArray(errorData.state) ? errorData.state[0] : errorData.state });
+        }
+        if (errorData.city) {
+          form.setError("city", { type: "manual", message: Array.isArray(errorData.city) ? errorData.city[0] : errorData.city });
+        }
+        
+        // For general errors, show a toast
+        if (errorData.message && !Object.keys(form.formState.errors).length) {
+          toast.error(typeof errorData.message === 'string' ? errorData.message : "Signup failed. Please check your information and try again.");
+        }
       }
     } catch (error) {
-      setErrorMessage("Network error occurred. Please check your connection and try again.");
+      toast.error("Network error occurred. Please check your connection and try again.");
       console.error("Signup error:", error);
     } finally {
       setLoading(false);
@@ -91,12 +121,6 @@ export default function MerchantSignup() {
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          {errorMessage && (
-            <div className="bg-red-50 border border-red-200 p-4 rounded-md text-red-600 text-sm">
-              {errorMessage}
-            </div>
-          )}
-
           <div className="gap-4 grid grid-cols-2">
             <FormInput
               label="First Name"
@@ -123,20 +147,19 @@ export default function MerchantSignup() {
             labelClassName="text-left"
           />
 
-          <FormInput
+          <PhoneInput
             label="Phone Number"
             name="phoneNumber"
             control={form.control}
-            placeholder="+234..."
-            labelClassName="text-left"
+            placeholder="8012345678"
           />
 
           <FormInput
             label="Password"
             name="password"
-            type={showPassword ? "text" : "password"}
             control={form.control}
             showPasswordToggle
+            showPassword={showPassword}
             onTogglePassword={() => setShowPassword(!showPassword)}
             labelClassName="text-left"
           />
@@ -144,9 +167,9 @@ export default function MerchantSignup() {
           <FormInput
             label="Confirm Password"
             name="confirmPassword"
-            type={showConfirmPassword ? "text" : "password"}
             control={form.control}
             showPasswordToggle
+            showPassword={showConfirmPassword}
             onTogglePassword={() => setShowConfirmPassword(!showConfirmPassword)}
             labelClassName="text-left"
           />

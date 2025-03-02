@@ -11,20 +11,8 @@ export const formatErrorMessage = (error) => {
       // Parse the error if it's a string representation of JSON
       const errorObj = typeof error === "string" ? JSON.parse(error) : error;
       
-      // Collect all error messages
-      let messages = [];
-      
-      Object.entries(errorObj).forEach(([key, value]) => {
-        if (Array.isArray(value)) {
-          // Join multiple error messages for the same field
-          messages.push(value.join(". "));
-        } else if (typeof value === "string") {
-          messages.push(value);
-        }
-      });
-      
-      // Join all messages with a space instead of line breaks
-      return messages.join(" ");
+      // Return object as is to allow component-level error handling
+      return errorObj;
     }
     
     return "An error occurred";
@@ -32,4 +20,13 @@ export const formatErrorMessage = (error) => {
     console.error("Error parsing error message:", e);
     return "An unexpected error occurred";
   }
+};
+
+// Helper function to check if we have field-specific errors
+export const hasFieldErrors = (errors) => {
+  if (!errors) return false;
+  
+  // Check if the error object has any specific field keys
+  const fieldErrors = ['email', 'phone_number', 'password', 'first_name', 'last_name'];
+  return fieldErrors.some(field => errors[field]);
 };
