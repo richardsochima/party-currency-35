@@ -103,7 +103,7 @@ export default function UserAvatar({ showName, auth, merchantLinks = false }) {
             </>
           )}
           <Avatar
-            style={{ backgroundColor: "#1A1A1A", verticalAlign: "middle" }}
+            style={{ backgroundColor: "#334495", verticalAlign: "middle" }}
             size="default"
           >
             <span className="font-semibold text-white">{name?.[0]}</span>
