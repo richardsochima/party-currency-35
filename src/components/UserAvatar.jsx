@@ -38,22 +38,6 @@ export default function UserAvatar({ showName, auth, merchantLinks = false }) {
         <li
           className="hover:font-semibold hover:text-Primary transition-colors cursor-pointer select-none"
           onClick={() => {
-            navigate("/merchant/transactions");
-          }}
-        >
-          Transactions
-        </li>
-        <li
-          className="hover:font-semibold hover:text-Primary transition-colors cursor-pointer select-none"
-          onClick={() => {
-            navigate("/merchant/events");
-          }}
-        >
-          Events
-        </li>
-        <li
-          className="hover:font-semibold hover:text-Primary transition-colors cursor-pointer select-none"
-          onClick={() => {
             navigate("/merchant/settings");
           }}
         >
