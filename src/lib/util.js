@@ -21,7 +21,7 @@ export function storeAuth(
 
 export function getAuth() {
   const accessToken = Cookies.get("accessToken");
-  const userType = localStorage.getItem("userType");
+  const userType = localStorage.getItem("userType") || "customer";
   console.log("Getting user type:", userType); // Debug log
 
   return { accessToken, userType };
@@ -29,5 +29,7 @@ export function getAuth() {
 
 export function deleteAuth() {
   Cookies.remove("accessToken");
-  // Don't remove userType on logout to preserve the type for next login
+  // We'll now clear the userType on logout to ensure a clean state for the next login
+  localStorage.removeItem("userType");
+  console.log("Auth cleared on logout");
 }

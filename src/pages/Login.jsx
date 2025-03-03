@@ -10,6 +10,7 @@ import { storeAuth } from "@/lib/util";
 import { validateAdminCredentials, setAdminAuth } from '@/lib/admin-auth';
 import { USER_PROFILE_CONTEXT, SIGNUP_CONTEXT } from "@/context";
 import { formatErrorMessage } from "../utils/errorUtils";
+import { toast } from "react-hot-toast";
 
 export default function LoginPage() {
   const { setSignupOpen } = useContext(SIGNUP_CONTEXT);
@@ -46,44 +47,74 @@ export default function LoginPage() {
         console.log("Login successful:", data);
         const accessToken = data.token;
         
-        // Get user type from response if available, or try to determine from user profile data
-        let userType = data.user_type?.toLowerCase() === "merchant" ? "merchant" : "customer";
+        // Initially, determine user type based on API response
+        let initialUserType = "customer"; // Default to customer
         
-        // Store auth with the user type
-        storeAuth(accessToken, userType, true);
+        // Check if API response has explicit user_type field
+        if (data.user_type && data.user_type.toLowerCase() === "merchant") {
+          initialUserType = "merchant";
+          console.log("API response indicates merchant user type");
+        }
+        
+        // First store auth with the initial user type
+        storeAuth(accessToken, initialUserType, true);
 
-        // Fetch user profile
-        const userProfileResponse = await getProfileApi();
-        if (userProfileResponse.ok) {
-          const userProfileData = await userProfileResponse.json();
+        try {
+          // Fetch user profile to confirm user type
+          const userProfileResponse = await getProfileApi();
           
-          // Check if the profile data has information about user type
-          if (userProfileData.merchant_details || userProfileData.business_type) {
-            userType = "merchant";
-            // Update stored user type if profile shows it's a merchant
-            storeAuth(accessToken, "merchant", true);
+          if (userProfileResponse.ok) {
+            const userProfileData = await userProfileResponse.json();
+            console.log("User profile data:", userProfileData);
+            
+            // Check if the profile has merchant indicators
+            const hasMerchantDetails = userProfileData.merchant_details || userProfileData.business_type;
+            
+            // If profile confirms user is a merchant, update the stored user type
+            if (hasMerchantDetails) {
+              console.log("Profile confirms merchant user type via merchant_details or business_type");
+              storeAuth(accessToken, "merchant", true);
+              setUserProfile(userProfileData);
+              
+              // Redirect to merchant transactions page
+              console.log("Redirecting to merchant transactions page");
+              toast.success("Logged in as merchant");
+              navigate("/merchant/transactions");
+            } else {
+              // User is confirmed as a regular customer/celebrant
+              console.log("Profile confirms customer/celebrant user type");
+              setUserProfile(userProfileData);
+              
+              // Redirect to customer dashboard
+              console.log("Redirecting to customer dashboard");
+              toast.success("Logged in successfully");
+              navigate("/dashboard");
+            }
+          } else {
+            throw new Error("Failed to fetch user profile");
           }
+        } catch (profileError) {
+          console.error("Profile fetch error:", profileError);
           
-          setUserProfile(userProfileData);
-          console.log("User profile fetched:", userProfileData);
-          
-          // Redirect based on confirmed user type
-          if (userType === "merchant") {
-            console.log("Redirecting to merchant transactions page");
+          // If we can't get the profile, use the initial user type from login
+          if (initialUserType === "merchant") {
+            console.log("Falling back to merchant type from login response");
             navigate("/merchant/transactions");
           } else {
-            console.log("Redirecting to customer dashboard");
+            console.log("Falling back to customer type from login response");
             navigate("/dashboard");
           }
-        } else {
-          throw new Error("Failed to fetch user profile.");
         }
       } else {
-        setErrorMessage(formatErrorMessage(data));
+        const errorMsg = formatErrorMessage(data);
+        setErrorMessage(errorMsg);
+        toast.error(errorMsg || "Login failed");
       }
     } catch (error) {
       console.error("Login error:", error);
-      setErrorMessage(formatErrorMessage(error) || "An error occurred. Please try again later.");
+      const errorMsg = formatErrorMessage(error) || "An error occurred. Please try again later.";
+      setErrorMessage(errorMsg);
+      toast.error(errorMsg);
     } finally {
       setLoading(false);
     }
