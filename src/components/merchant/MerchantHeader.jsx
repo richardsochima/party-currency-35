@@ -42,7 +42,7 @@ export default function MerchantHeader({ toggleMobileMenu }) {
         </div>
       </div>
 
-      <UserAvatar showName={true} auth={false} merchantLinks={true} />
+      <UserAvatar showName={true} auth={true} merchantLinks={true} />
     </header>
   );
 }

@@ -56,9 +56,9 @@ export default function LoginPage() {
           setUserProfile(userProfileData);
           console.log("User profile fetched:", userProfileData);
           
-          // Redirect based on user type
+          // Redirect based on user type - changed merchant redirect to transactions page
           if (userType === "merchant") {
-            navigate("/merchant/dashboard");
+            navigate("/merchant/transactions");
           } else {
             navigate("/dashboard");
           }

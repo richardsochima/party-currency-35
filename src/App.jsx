@@ -1,3 +1,4 @@
+
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { ContextWrapper } from "./context";
 import { Toaster } from "react-hot-toast";
@@ -21,7 +22,6 @@ import Customize200 from "./pages/Customize200";
 import Customize500 from "./pages/Customize500";
 import Customize1000 from "./pages/Customize1000";
 import TermsOfService from "./pages/TermsOfService";
-import MerchantDashboard from "./pages/MerchantDashboard";
 import MerchantTransactionHistory from "./pages/merchant/TransactionHistory";
 import MerchantEventHistory from "./pages/merchant/EventHistory";
 import MerchantSettings from "./pages/merchant/Settings";
@@ -103,7 +103,7 @@ function App() {
             path="/merchant/dashboard"
             element={
               <PrivateRoute userType="merchant">
-                <MerchantDashboard />
+                <Navigate to="/merchant/transactions" replace />
               </PrivateRoute>
             }
           />
