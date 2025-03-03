@@ -46,20 +46,33 @@ export default function LoginPage() {
         console.log("Login successful:", data);
         const accessToken = data.token;
         
-        // Get user type from response if available
-        const userType = data.user_type?.toLowerCase() === "merchant" ? "merchant" : "customer";
+        // Get user type from response if available, or try to determine from user profile data
+        let userType = data.user_type?.toLowerCase() === "merchant" ? "merchant" : "customer";
+        
+        // Store auth with the user type
         storeAuth(accessToken, userType, true);
 
+        // Fetch user profile
         const userProfileResponse = await getProfileApi();
         if (userProfileResponse.ok) {
           const userProfileData = await userProfileResponse.json();
+          
+          // Check if the profile data has information about user type
+          if (userProfileData.merchant_details || userProfileData.business_type) {
+            userType = "merchant";
+            // Update stored user type if profile shows it's a merchant
+            storeAuth(accessToken, "merchant", true);
+          }
+          
           setUserProfile(userProfileData);
           console.log("User profile fetched:", userProfileData);
           
-          // Redirect based on user type - changed merchant redirect to transactions page
+          // Redirect based on confirmed user type
           if (userType === "merchant") {
+            console.log("Redirecting to merchant transactions page");
             navigate("/merchant/transactions");
           } else {
+            console.log("Redirecting to customer dashboard");
             navigate("/dashboard");
           }
         } else {

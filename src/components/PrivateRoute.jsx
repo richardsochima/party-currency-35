@@ -4,6 +4,7 @@ import { getAuth } from "@/lib/util";
 
 export default function PrivateRoute({ children, userType }) {
   const { accessToken, userType: currentUserType } = getAuth();
+  console.log("PrivateRoute check - Required type:", userType, "Current type:", currentUserType);
 
   if (!accessToken) {
     return <Navigate to="/login" />;
@@ -11,7 +12,11 @@ export default function PrivateRoute({ children, userType }) {
 
   // Redirect to appropriate dashboard if user type doesn't match
   if (userType && userType !== currentUserType) {
-    return <Navigate to={currentUserType === "merchant" ? "/merchant/dashboard" : "/dashboard"} />;
+    const redirectPath = currentUserType === "merchant" 
+      ? "/merchant/transactions" 
+      : "/dashboard";
+    console.log("Redirecting to:", redirectPath);
+    return <Navigate to={redirectPath} />;
   }
 
   return children;
