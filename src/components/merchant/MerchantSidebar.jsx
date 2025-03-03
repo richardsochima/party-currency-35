@@ -1,3 +1,4 @@
+
 import React, { useState, useContext } from "react";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import { LogOut, PanelRightOpen, PanelLeftOpen, X, History, FileText, Settings } from "lucide-react";
@@ -69,7 +70,7 @@ export function MerchantSidebar({ isOpen, onClose }) {
                 key={index}
                 to={link.path}
                 className={`flex items-center gap-4 p-3 rounded-lg transition-colors hover:bg-opacity-10 hover:bg-white ${
-                  location.pathname === link.path ? "bg-opacity-10 bg-white" : ""
+                  isActive(link.path) ? "bg-opacity-10 bg-white" : ""
                 }`}
               >
                 {link.icon}
@@ -119,7 +120,7 @@ export function MerchantSidebar({ isOpen, onClose }) {
                   key={index}
                   to={link.path}
                   className={`flex items-center gap-4 p-3 rounded-lg transition-colors hover:bg-opacity-10 hover:bg-white ${
-                    location.pathname === link.path ? "bg-opacity-10 bg-white" : ""
+                    isActive(link.path) ? "bg-opacity-10 bg-white" : ""
                   }`}
                   onClick={onClose}
                 >
